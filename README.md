@@ -48,7 +48,7 @@ Helpfull data and tech arcticles used for this project.
 
 https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2
 
-- Chicago Tribute homicides portal and crime data FAQ:
+- Chicago Tribune homicides portal and crime data FAQ:
 
 http://crime.chicagotribune.com/chicago/homicides
 
