@@ -14,7 +14,7 @@ Explore seasonality of Chicago crimes using public Chicago crime data sets.
 
 `conda install -c conda-forge fastparquet snappy python-snappy\
     bokeh dask distributed numba scikit-learn pyarrow matplotlib palettable\
-    seaborn bottleneck pymc3 brewer2mpl`
+    seaborn bottleneck pymc3 brewer2mpl holoviews datashader`
 
 ### - Archive your Anaconda dev environment:
 
