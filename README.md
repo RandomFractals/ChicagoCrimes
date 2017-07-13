@@ -44,6 +44,7 @@ TODO:
 python scripts/convert_crime_csv_to_parquet.py
 ```
 
+## 4. Run interactive Jupyter Notebooks from /notebooks to sample data
 
 ```bash
 jupyter notebook
