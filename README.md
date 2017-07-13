@@ -12,15 +12,19 @@ Explore seasonality of Chicago crimes using public Chicago crime data sets.
 
 ### - Install some data sci Python libs for data analytics from conda-forge:
 
-`conda install -c conda-forge fastparquet snappy python-snappy\
-    bokeh dask distributed numba scikit-learn pyarrow matplotlib palettable\
+```bash
+conda install -c conda-forge fastparquet snappy python-snappy pyspark
+    bokeh dask distributed numba scikit-learn pyarrow matplotlib palettable
     seaborn bottleneck pymc3 brewer2mpl holoviews datashader`
+```
 
 ### - Archive your Anaconda dev environment:
 
 The following command will create a spec file with a list of packages installed: 
 
-`conda list --explicit > spec-file.txt`
+```bash
+conda list --explicit > spec-file.txt
+```
 
 See conda.io for more info on managing environments: https://conda.io/docs/using/envs.html
 
@@ -33,9 +37,17 @@ https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2
 
 ## 3. Convert raw CSV data to DataFrame with Dask and Distributed
 
-Convert raw CSV data to pandas DataFrame and save it in Parquet file format for some preliminary data scrubbing and analytics with Jupyter notebooks.
+ Convert raw CSV data to pandas DataFrame and save it in Parquet file format for some preliminary data scrubbing and analytics with Jupyter notebooks
 
-`[TODO]: python scripts/convert_crime_csv_to_parquet.py`
+TODO:
+```bash
+python scripts/convert_crime_csv_to_parquet.py
+```
+
+
+```bash
+jupyter notebook
+```
 ...
 
 # References
