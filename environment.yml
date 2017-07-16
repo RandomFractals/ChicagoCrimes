@@ -1,0 +1,20 @@
+name: ds
+channels:
+  - ioam
+  - bokeh
+  - conda-forge
+  - damianavila82
+  - defaults
+dependencies:
+  - python=3
+  - notebook
+  - holoviews
+  - geoviews
+  - pandas
+  - xarray
+  - datashader
+  - paramnb
+  - rise
+  - jupyter_dashboards
+  - fastparquet
+  - parambokeh
