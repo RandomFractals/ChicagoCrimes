@@ -1,8 +1,8 @@
 # Chicago Crimes
 
-## Project Goals
+## Project Goal
 
-Explore seasonality of Chicago crimes using public Chicago crime data sets.
+Explore public Chicago crimes data set using the latest Python open source libs for big data visualizations: Dask, HoloViews, Datashader, GeoViews, Bokeh.
 
 # Project Build Instructions
 
@@ -15,7 +15,7 @@ Explore seasonality of Chicago crimes using public Chicago crime data sets.
 ```bash
 conda install -c conda-forge fastparquet snappy python-snappy pyspark
     bokeh dask distributed numba scikit-learn pyarrow matplotlib palettable
-    seaborn bottleneck pymc3 brewer2mpl holoviews datashader`
+    seaborn bottleneck pymc3 brewer2mpl holoviews datashader
 ```
 
 ### - Archive your Anaconda dev environment:
