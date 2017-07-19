@@ -51,6 +51,7 @@ jupyter notebook
 ```
 ...
 
+
 # References
 
 Helpfull data and tech arcticles used for this project.
@@ -70,6 +71,21 @@ http://crime.chicagotribune.com/chicago/faq
 - Public Google BigQuery Chicago crime data: 
 
 https://cloud.google.com/bigquery/public-data/chicago-crime-data
+
+
+## Chicago Crimes Data Narratives
+
+Joe Leider put together a number of Tableau data narratives on crime in Chicago from 2001 to 2015 (must read):
+
+http://joeleider.com/data-visualization/13-data-narratives-on-crime-in-chicago/
+
+http://joeleider.com/data-visualization/the-seasonality-of-chicago-crime/
+
+http://joeleider.com/data-visualization/visualizing-crime-by-hour-in-chicago/
+
+- Chicago homocides and arrests from 2001 to February 2017:
+
+http://joeleider.com/data-visualization/murder-in-chicago-finding-the-ferguson-effect-in-10-graphs/
 
 
 ## Python Data Science Links
