@@ -51,6 +51,8 @@ jupyter notebook
 ```
 ...
 
+See: https://github.com/RandomFractals/ChicagoCrimes/blob/master/notebooks/csv_data_preview.ipynb
+
 
 # References
 
