@@ -89,7 +89,7 @@ print(df.info())
 print_line()
 
 # save it in parquet format
-parquet_file_name = '../data/Chicago-crimes-2017.parq'
+parquet_file_name = '../data/crimes-2017.parq'
 print('Converting to parquet format: {} ...'.format(parquet_file_name))
 print('...')
 df.to_parquet(parquet_file_name)
