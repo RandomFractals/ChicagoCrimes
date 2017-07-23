@@ -35,13 +35,13 @@ Click on Download > CSV menu in the top right corner to download all crimes data
 
 https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2
 
-## 3. Convert raw CSV data to DataFrame with Dask and Distributed
+## 3. Convert raw CSV data to DataFrame with Dask
 
- Convert raw CSV data to pandas DataFrame and save it in Parquet file format for some preliminary data scrubbing and analytics with Jupyter notebooks
+ Convert raw CSV data to dask DataFrame and save it in Parquet file format with snappy compression for some preliminary data scrubbing and analytics with Jupyter notebooks:
 
-TODO:
 ```bash
-python scripts/convert_crime_csv_to_parquet.py
+>cd scripts
+scripts>python convert_crime_csv_to_parquet.py
 ```
 
 ## 4. Run interactive Jupyter Notebooks from /notebooks to sample data
@@ -51,7 +51,13 @@ jupyter notebook
 ```
 ...
 
-See: https://github.com/RandomFractals/ChicagoCrimes/blob/master/notebooks/csv_data_preview.ipynb
+- See CSV data preview notebook if you download only Crimes_-_2017.csv (~30Mb) for sample data preview: 
+
+https://github.com/RandomFractals/ChicagoCrimes/blob/master/notebooks/csv_data_preview.ipynb
+
+- Crime plots notebook has some crime type stats and will contain matplotlib and bokeh graphs with HoloView (currently in dev):
+
+https://github.com/RandomFractals/ChicagoCrimes/blob/master/notebooks/crime-plots.ipynb
 
 
 # References
