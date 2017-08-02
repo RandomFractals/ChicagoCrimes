@@ -1,0 +1,8 @@
+---
+
+data:
+
+  - url: https://data.cityofchicago.org/api/views/d62x-nvdr/rows.csv?accessType=DOWNLOAD
+    title: 'Chicago Crimes 2001 to present CSV Data'
+    files:
+      - Chicago-crimes-2001-to-present.csv
