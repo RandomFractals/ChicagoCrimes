@@ -7,7 +7,7 @@ def print_line():
     print('------------------------------------------------------------')    
     
 # load csv data into dask df
-data_file_name = '../raw_data/Crimes_-_2017.csv' # data/Chicago-crimes-2017.csv'
+data_file_name = '../raw_data/Crimes_-_2017.csv'
 print('Loading data file: {} ...'.format(data_file_name))
 df = dd.read_csv(data_file_name, 
                  error_bad_lines=False,
@@ -89,7 +89,7 @@ print(df.info())
 print_line()
 
 # save it in parquet format
-parquet_file_name = '../data/crimes-2017.parq'
+parquet_file_name = '../data/crimes-2017.snappy.parq'
 print('Converting to parquet format: {} ...'.format(parquet_file_name))
 print('...')
 df.to_parquet(parquet_file_name)
