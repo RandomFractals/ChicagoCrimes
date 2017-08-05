@@ -7,6 +7,7 @@ def print_line():
     print('------------------------------------------------------------')    
     
 # load csv data into dask df
+# Note: change it to ../raw_data/Crimes_-_2001_to_present.csv for all crime data parse
 data_file_name = '../raw_data/Crimes_-_2017.csv'
 print('Loading data file: {} ...'.format(data_file_name))
 df = dd.read_csv(data_file_name, 
@@ -59,7 +60,7 @@ unique_column_values(df)
 
 # reduce data set
 select_columns = ['Date', 'Block', 'PrimaryType',
-                  'Description', 'LocationDescription', 
+                  'Description', 'LocationDescription', 'CommunityArea', 
                   'Arrest', 'Domestic', 'Latitude', 'Longitude']
 df = df[select_columns]
 
@@ -88,11 +89,15 @@ print_line()
 print(df.info())
 print_line()
 
+# split data frame into 20 partitions to speed up data loading later
+#print('Repartitioning data frame to 20 partitions...')
+#df = df.repartition(npartitions=20)
+
 # save it in parquet format
 parquet_file_name = '../data/crimes-2017.snappy.parq'
 print('Converting to parquet format: {} ...'.format(parquet_file_name))
 print('...')
-df.to_parquet(parquet_file_name)
+df.to_parquet(parquet_file_name, compression='SNAPPY')
 
 
 
