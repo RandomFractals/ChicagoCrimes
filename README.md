@@ -51,14 +51,18 @@ jupyter notebook
 ```
 ...
 
-- See CSV data preview notebook if you download only Crimes_-_2017.csv (~30Mb) for sample data preview: 
+- See CSV data preview notebook for 2017 Chicago crimes sample data preview (included in this repo's /data folder): 
 
-https://github.com/RandomFractals/ChicagoCrimes/blob/master/notebooks/csv_data_preview.ipynb
+https://github.com/RandomFractals/ChicagoCrimes/blob/master/notebooks/csv-data-preview.ipynb
 
-- Crime plots notebook has some crime type stats and will contain matplotlib and bokeh graphs with HoloView (currently in dev):
+- Crime plots notebook has some crime type stats and matplotlib charts for reported 2017 Chicago crimes:
 
 https://github.com/RandomFractals/ChicagoCrimes/blob/master/notebooks/crime-plots.ipynb
 
+
+https://github.com/RandomFractals/ChicagoCrimes/blob/master/notebooks/all-chicago-crime-charts.ipynb
+
+TODO: covert matplotlib charts to interactive Chicago crimes charts and maps with HoloViews, Bokeh, Datashader and GeoViews.
 
 # References
 
