@@ -59,6 +59,7 @@ https://github.com/RandomFractals/ChicagoCrimes/blob/master/notebooks/csv-data-p
 
 https://github.com/RandomFractals/ChicagoCrimes/blob/master/notebooks/crime-plots.ipynb
 
+- All Chicago crime charts notebook requires Crimes-2001-to-present csv data download from Chicago data portal and running conversion script to snappy parquet. You can still preview select matplotlib charts output in this notebook without going through that hurdle:
 
 https://github.com/RandomFractals/ChicagoCrimes/blob/master/notebooks/all-chicago-crime-charts.ipynb
 
