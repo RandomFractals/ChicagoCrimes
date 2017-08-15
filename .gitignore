@@ -2,6 +2,7 @@
 
 /raw_data
 /data/crimes-2001-to-present.parq/*
+/notebooks/.ipynb_checkpoints
 
 # compiled output
 /dist
