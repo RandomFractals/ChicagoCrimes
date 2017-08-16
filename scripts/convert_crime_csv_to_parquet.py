@@ -8,28 +8,40 @@ def print_line():
     print('------------------------------------------------------------')    
     
 # load csv data into dask df
-# Note: change this to parse smaller ~33Mb 2017 crime data file
+# Note: change this to parse smaller ~35Mb 2017 crime data file
 data_file_name = '../raw_data/Crimes_-_2001_to_present.csv' #'../raw_data/Crimes_-_2017.csv'
 
-print('{}: Loading data file: {} ...'.format(\
-	datetime.now().strftime('%H:%M:%S'), data_file_name))
-print('\tThis might take an hour on a quad core with 4Gb or ram to spare')
+print('{}: Loading data file (~48min): {} ...'\
+	.format(datetime.now().strftime('%H:%M:%S'), data_file_name))
+print('\tThis might take an hour on a quad core with 4Gb of ram to spare.')
 print('\tRun it before you step out for lunch :)\n...')
+
+# load csv data
 df = dd.read_csv(data_file_name, 
                  error_bad_lines=False,
-                 assume_missing=True, # dtype={'Ward': int})
-								 dtype={'Location': 'str'},
-                 parse_dates=['Date'], infer_datetime_format=True)
+                 assume_missing=True,
+								 dtype={'ID': np.int64, 
+									'Beat': np.uint16, 
+									#'District': 'uint16', 
+									#'Ward': 'uint16',
+									#'Community Area': 'uint16',
+									'Year': np.uint16, 
+									'Location': 'str'},
+                 parse_dates=['Date'], 
+								 infer_datetime_format=True)
 
-# persist in memory
+# persist data frame in memory
 df = df.persist()
-print('{}: All data loaded into memory.'.format(datetime.now().strftime('%H:%M:%S')))
+
+print('{}: All data loaded into memory.'\
+	.format(datetime.now().strftime('%H:%M:%S')))
 
 # log records count and load data partitions
 print_line()
 print('Data set info:')
 print_line()
-print('{:,} total records in {} partitions'.format(len(df), df.npartitions))
+print('{:,} total records in {} partitions'\
+	.format(len(df), df.npartitions))
 
 # drop duplicates
 df.drop_duplicates(subset=['ID', 'Case Number'], inplace=True)
@@ -52,11 +64,11 @@ print_line()
 print(df.dtypes)
 
 def unique_column_values(df):
-    for column in df.columns:
-        print('{} | {} | {}'.format(
-            df[column].name,
-            len(df[column].unique()),
-            df[column].dtype))
+  for column in df.columns:
+    print('{} | {} | {}'.format(
+      df[column].name,
+      len(df[column].unique()),
+      df[column].dtype))
 
 # print unique column values counts
 #print_line()
@@ -71,42 +83,50 @@ select_columns = ['Date', 'Block', 'PrimaryType',
                   'Arrest', 'Domestic', 'Latitude', 'Longitude', 'Year']
 df = df[select_columns]
 
-# print some stats
+# print some dataset stats
 print_line()
-print('Data set stats:')
+print('{}: Dataset stats...'\
+	.format(datetime.now().strftime('%H:%M:%S')))
 print_line()
-print("{:,} total records".format(len(df)))
+print('{:,} total records'.format(len(df)))
 
 # drop duplicates
+print('Dropping duplicates...')
 df = df.drop_duplicates() #.dropna()
 print('{:,} unique records'.format(len(df)))
+
+print('Calculating total arrests and domestic crime reports... (~3 min)')
 
 # count arrests
 arrests_df = df[df.Arrest==True]
 print('{:,} arrests'.format(len(arrests_df)))
 
-# domestic
+# count domestic crime reports
 domestic_df = df[df.Domestic==True]
 print('{:,} domestic crime reports'.format(len(domestic_df)))
 
 # print data frame info
 print_line()
-print('DataFrame info():')
+print('{}: DataFrame info():'\
+	.format(datetime.now().strftime('%H:%M:%S')))
 print_line()
 print(df.info())
+
+# list reduced dataset columns
+print_line()
+print('Reduced dataset Columns:')
+print_line()
+print(df.columns)
 print_line()
 
-# split data frame into 20 partitions to speed up data loading later
-#print('Repartitioning data frame to 20 partitions...')
-#df = df.repartition(npartitions=20)
-
 # save it in parquet format
-parquet_file_name = '../data/crimes-2001-to-present.snappy.parq' #'../data/crimes-2017.snappy.parq'
-print('{}: Converting data to parquet format: {} ...'.format(\
-	datetime.now().strftime('%H:%M:%S'), parquet_file_name))
+parquet_data_folder = '../data/crimes-2001-to-present.snappy.parq' #'../data/crimes-2017.snappy.parq'
+print('{}: Saving data in snappy parquet format to (~6 min): {} ...'\
+	.format(datetime.now().strftime('%H:%M:%S'), parquet_data_folder))
 print('...')
-df.to_parquet(parquet_file_name, compression='SNAPPY')
-print('{}: Finished creating snappy parquet dataset.'.format(datetime.now().strftime('%H:%M:%S')))
+df.to_parquet(parquet_data_folder, compression='SNAPPY')
+print('{}: Finished creating snappy parquet dataset at: {}'\
+	.format(datetime.now().strftime('%H:%M:%S'), parquet_data_folder))
 
 
 
