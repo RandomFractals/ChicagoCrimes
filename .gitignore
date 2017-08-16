@@ -1,7 +1,7 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 /raw_data
-/data/crimes-2001-to-present.parq/*
+/data/crimes-2001-to-present*
 /notebooks/.ipynb_checkpoints
 
 # compiled output
