@@ -51,11 +51,11 @@ def print_unique_column_values(df):
 			df[column].dtype))
 	print_line()
 
-#---------------------------- Data Processing Script ------------------------------
+#---------------------------- Data Processing Script ---------------------------------------
 
 # load csv data into dask df
-# Note: change this to parse smaller ~36Mb 2017 crime data file
-data_file_name = '../raw_data/Crimes_-_2001_to_present.csv' #'../raw_data/Crimes_-_2017.csv'
+# Note: change this to parse smaller ~36Mb 2017 crime data file included in this repo
+data_file_name = '../raw_data/Crimes_-_2001_to_present.csv' #'../data/Crimes_-_2017.csv'
 log('Loading data file: {} ...'.format(data_file_name))
 if data_file_name.endswith('Crimes_-_2001_to_present.csv'):
 	print('This might take half an hour on a quad core with fast SDD and 4Gb of ram to spare.')

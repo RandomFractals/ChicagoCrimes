@@ -29,7 +29,7 @@ conda list --explicit > spec-file.txt
 See conda.io for more info on managing environments: https://conda.io/docs/using/envs.html
 
 
-## 2. Download raw CSV Chicago crimes data (~1.5Gb)
+## 2. Download all raw CSV Chicago crimes data (~1.4Gb as of August 19, 2017)
 
 Click on Download > CSV menu in the top right corner to download all crimes data since 2001:
 
