@@ -1,0 +1,106 @@
+
+scripts>python convert_crime_csv_to_parquet.py
+
+10:12:36: Loading data file: ../raw_data/Crimes_-_2001_to_present.csv ...
+This might take half an hour on a quad core with fast SSD and 4Gb of ram to spare.
+        Run it before you step out for lunch :)
+...
+
+10:43:15: All data loaded into memory.
+
+DataFrame info:
+-------------------------------------------------------------------------------
+<class 'dask.dataframe.core.DataFrame'>
+Columns: 22 entries, ID to Location
+dtypes: datetime64[ns](1), object(9), bool(2), float64(7), int64(1), uint16(2)None
+-------------------------------------------------------------------------------
+Columns:
+-------------------------------------------------------------------------------
+Index(['ID', 'Case Number', 'Date', 'Block', 'IUCR', 'Primary Type',
+       'Description', 'Location Description', 'Arrest', 'Domestic', 'Beat',
+       'District', 'Ward', 'Community Area', 'FBI Code', 'X Coordinate',
+       'Y Coordinate', 'Year', 'Updated On', 'Latitude', 'Longitude',
+       'Location'],
+      dtype='object')
+-------------------------------------------------------------------------------
+
+Column dtypes:
+-------------------------------------------------------------------------------
+ID                               int64
+Case Number                     object
+Date                    datetime64[ns]
+Block                           object
+IUCR                            object
+Primary Type                    object
+Description                     object
+Location Description            object
+Arrest                            bool
+Domestic                          bool
+Beat                            uint16
+District                       float64
+Ward                           float64
+Community Area                 float64
+FBI Code                        object
+X Coordinate                   float64
+Y Coordinate                   float64
+Year                            uint16
+Updated On                      object
+Latitude                       float64
+Longitude                      float64
+Location                        object
+dtype: object
+-------------------------------------------------------------------------------
+6,406,670 total records in 24 partitions
+DataFrame size: 140,946,740
+-------------------------------------------------------------------------------
+
+10:43:15: Dropping duplicate cases...
+
+10:43:15: Dropping some columns...
+
+10:43:15: Dropping duplicate records...
+6,389,375 unique records
+
+10:43:34: Reduced DataFrame Columns:
+Columns:
+-------------------------------------------------------------------------------
+Index(['Date', 'Block', 'PrimaryType', 'Description', 'LocationDescription',
+       'CommunityArea', 'Arrest', 'Domestic', 'Latitude', 'Longitude', 'Year'],
+      dtype='object')
+-------------------------------------------------------------------------------
+
+Column dtypes:
+-------------------------------------------------------------------------------
+Date                   datetime64[ns]
+Block                          object
+PrimaryType                    object
+Description                    object
+LocationDescription            object
+CommunityArea                 float64
+Arrest                           bool
+Domestic                         bool
+Latitude                      float64
+Longitude                     float64
+Year                           uint16
+dtype: object
+-------------------------------------------------------------------------------
+
+10:43:34: Creating Date index...
+
+10:43:54: Creating data categories...
+
+10:44:43: Reduced DataFrame info...
+
+DataFrame info:
+-------------------------------------------------------------------------------
+<class 'dask.dataframe.core.DataFrame'>
+Columns: 10 entries, Block to Year
+dtypes: category(5), object(1), bool(2), float64(2)None
+-------------------------------------------------------------------------------
+
+10:44:43: Saving data in snappy parquet format to: ../data/crimes-2001-to-present.snappy.parq ...
+...
+
+10:45:12: Finished creating snappy parquet dataset at: ../data/crimes-2001-to-present.snappy.parq
+
+scripts>
