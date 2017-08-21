@@ -75,9 +75,9 @@ Helpfull data and tech arcticles used for this project.
 
 https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2
 
-- Chicago Tribune homicides portal and crime data FAQ:
+- Chicago Tribune crimes portal and crime data FAQ:
 
-http://crime.chicagotribune.com/chicago/homicides
+http://crime.chicagotribune.com/chicago
 
 http://crime.chicagotribune.com/chicago/faq
 
@@ -85,6 +85,9 @@ http://crime.chicagotribune.com/chicago/faq
 
 https://cloud.google.com/bigquery/public-data/chicago-crime-data
 
+- Chicago crimes kernels on kaggle:
+
+https://www.kaggle.com/currie32/crimes-in-chicago/kernels
 
 ## Chicago Crimes Data Narratives
 
