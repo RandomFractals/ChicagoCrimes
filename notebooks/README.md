@@ -46,7 +46,8 @@ Therefore, these notebooks do not contain the usual commentary on visualized
 data insights interleaved with code and charts to avoid introducing any bias 
 in this short exploratory data analysis (EDA) study. 
 
-Many factors affect metropolitan area crimes, including weather,
+Many factors affect metropolitan area crimes, including weather, 
+employment, education and poverty levels, racial mix too, that I plan to explore later,
 federal government policy changes over time, local government changes, etc.
 
 I simply wanted to put together a set of notebooks that depict 
