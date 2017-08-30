@@ -41,13 +41,13 @@ https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2
 
 ```bash
 >cd scripts
-scripts>python convert_crime_csv_to_parquet.py
+/scripts>python convert_crime_csv_to_parquet.py
 ```
 
 ## 4. Run interactive Jupyter Notebooks from /notebooks to sample data
 
 ```bash
-jupyter notebook
+/notebooks>jupyter notebook
 ```
 ...
 
