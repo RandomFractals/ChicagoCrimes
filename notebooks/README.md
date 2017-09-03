@@ -22,7 +22,7 @@ Crimes plots notebook contains matplotlib charts for 2017 Chicago crime data.
 
 ## all-chicago-crime-charts.ipynb
 
-This notebook loads large Chicago crime data set (~1.4Gb of raw data, ~190Mb compressed) 
+This notebook loads large Chicago crimes dataset (~1.4Gb of raw data, ~219Mb compressed) 
 with all crimes data recorded since 2001 to present (August 2017).
 
 A variety of matplotlib charts in this notebook show decline of Chicago crime over time,
