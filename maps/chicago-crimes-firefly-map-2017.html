@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+  <title>Chicago Crime FireFly Map</title>
+  <meta charset="utf-8">
+	<!--
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.2.0/dist/leaflet.css" />
+	<script src="https://cdn.jsdelivr.net/npm/leaflet@1.2.0/dist/leaflet.js"></script>
+	-->
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+  <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+	<script src="leaflet-glify.js"></script>	
+  <style>
+    html, body {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+      background: rgb(14, 21, 30);
+    }
+
+    #map {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      background-color: #333;
+    }
+  </style>
+</head>
+<body>
+<div id="map"></div>
+<div id="lnlt"></div>
+<script>
+  var map = L.map('map').setView([41.85, -87.68], 10);
+
+  L.tileLayer("http://{s}.sm.mapstack.stamen.com/(toner-background,$fff[difference],$fff[@23],$fff[hsl-saturation@20],toner-lines[destination-in])/{z}/{x}/{y}.png")
+    //L.tileLayer("http://{s}.sm.mapstack.stamen.com/(toner-lite,$fff[difference],$fff[@23],$fff[hsl-saturation@20])/{z}/{x}/{y}.png")
+    .addTo(map);
+
+  getGeoData(['../data/chicago-crimes-2017.json', '../data/chicago-community-areas.geojson'], function(points, districts) {
+    /*L.glify.shapes({
+      map: map,
+      click: function (e, feature) {
+        L.popup()
+          .setLatLng(e.latlng)
+          .setContent("You clicked on " + feature.properties.NAZKR_ENG)
+          .openOn(map);
+
+        console.log(feature);
+        console.log(e);
+      },
+      data: JSON.parse(districts)
+    });*/
+
+    L.glify.points({
+      map: map,
+      click: function (e, point, xy) {
+        //set up a standalone popup (use a popup as a layer)
+        L.popup()
+            .setLatLng(point)
+            .setContent("You clicked the point at longitude:" + point[L.glify.longitudeKey] + ', latitude:' + point[L.glify.latitudeKey])
+            .openOn(map);
+
+        console.log(point);
+      },
+      data: JSON.parse(points)
+    });
+  });
+
+  function getGeoData(urls, fn) {
+    var results = [],
+      complete = 0,
+      total = urls.length;
+
+    urls.forEach(function(url, i) {
+      var request = new XMLHttpRequest();
+      request.open('GET', url, true);
+      request.onload = function () {
+        if (request.status < 200 && request.status > 400) return;
+        results[i] = request.responseText;
+        complete++;
+        if (complete === total) fn.apply(null, results);
+      };
+      request.send();
+    });
+  }
+</script>
+</html>
