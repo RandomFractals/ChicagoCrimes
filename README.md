@@ -4,6 +4,10 @@
 
 Explore public Chicago crimes data set using the latest Python open source libs for big data visualizations: Dask, HoloViews, Datashader, GeoViews, Bokeh.
 
+See a short recap of all the notebooks in this repo on linkedin:
+
+https://www.linkedin.com/pulse/chicago-crimes-2017-taras-novak/
+
 # Project Build Instructions
 
 ## 1. Python Environment Setup
