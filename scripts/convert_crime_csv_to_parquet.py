@@ -54,8 +54,8 @@ def print_unique_column_values(df):
 #---------------------------- Data Processing Script ---------------------------------------
 
 # load csv data into dask df
-# Note: change this to parse smaller ~39Mb 2017 crime data file included in this repo
-data_file_name = '../raw_data/Crimes_-_2001_to_present.csv' #'../data/Crimes_-_2017.csv'
+# Note: change this to parse all reported Chicago crimes data since 2001 (requires all crimes data download)
+data_file_name = '../data/2018/Crimes_-_2018.csv' # '../data/raw/Crimes_-_2001_to_present.csv' # for all crimes
 log('Loading data file: {} ...'.format(data_file_name))
 if data_file_name.endswith('Crimes_-_2001_to_present.csv'):
 	print('This might take half an hour on a quad core with fast SDD and 4Gb of ram to spare.')
@@ -65,19 +65,19 @@ else:
 
 # load csv data
 df = dd.read_csv(data_file_name, 
-                 error_bad_lines=False,
-                 assume_missing=True,
-				 dtype={'ID': np.int64,
-				 'PrimaryType': 'str',
-				 'FBICode': 'str',
-				 'Beat': np.uint16,
-				 #'District': np.uint16,
-				 #'Ward': np.uint16,
-				 #'Community Area': 'uint16',
-				 'Year': np.uint16,
-				 'Location': 'str'},
-                 parse_dates=['Date'],
-				 infer_datetime_format=True)
+  error_bad_lines=False,
+  assume_missing=True,
+	dtype={'ID': np.int64,
+		'PrimaryType': 'str',
+		'FBICode': 'str',
+		'Beat': np.uint16,
+		#'District': np.uint16,
+		#'Ward': np.uint16,
+		#'Community Area': 'uint16',
+		'Year': np.uint16,
+		'Location': 'str'},
+  parse_dates=['Date'],
+	infer_datetime_format=True)
 
 # persist dataframe in memory
 df = df.persist()
@@ -86,7 +86,7 @@ log('All data loaded into memory.')
 # print raw data stats
 print_dataframe_info(df)
 print_columns(df)
-if data_file_name.endswith('Crimes_-_2017.csv'):
+if data_file_name.endswith('Crimes_-_2018.csv'):
 	print_unique_column_values(df) # for small data sets only
 print_dataframe_size(df)
 
@@ -100,9 +100,9 @@ df = df.rename(columns={c: c.replace(' ', '') for c in df.columns})
 # reduce dataframe to the select columns we need for charting crime stats
 log('Dropping some columns...')
 select_columns = ['Date', 'Block', 'PrimaryType', 'FBICode',
-                  'Description', 'LocationDescription', 
-				  'CommunityArea', 'Beat', 'District', 'Ward',
-                  'Arrest', 'Domestic', 'Latitude', 'Longitude', 'Year']
+  'Description', 'LocationDescription', 
+	'CommunityArea', 'Beat', 'District', 'Ward',
+  'Arrest', 'Domestic', 'Latitude', 'Longitude', 'Year']
 df = df[select_columns]
 #df = df.drop(['ID', 'CaseNumber', 'IUCR', 'Beat', 'District', 'Ward',\
 #	'FBICode', 'UpdatedOn', 'Location'], axis=1) # denotes column
@@ -131,7 +131,7 @@ log('Reduced DataFrame info...')
 print_dataframe_info(df)
 
 # save dataframe in compressed snappy parquet format
-parquet_data_folder = '../data/crimes-2001-to-present.snappy.parq' #'../data/crimes-2017.snappy.parq'
+parquet_data_folder = '../data/2018/crimes-2018.snappy.parq' # '../data/2018/crimes-2001-to-present.snappy.parq' # for all crimes
 log('Saving data in snappy parquet format to: {} ...'.format(parquet_data_folder))
 print('...')
 df.to_parquet(parquet_data_folder, compression='SNAPPY') #, partition_on=['Year']) #,write_index=True)
