@@ -1,16 +1,16 @@
 // URL: https://beta.observablehq.com/@randomfractals/deck-gl-heatmap
-// Title: DeckGL Heatmap
+// Title: Chicago Crimes Heatmap
 // Author: Taras Novak (@randomfractals)
-// Version: 308
+// Version: 313
 // Runtime version: 1
 
 const m0 = {
-  id: "3b81b175f29201e7@308",
+  id: "3b81b175f29201e7@313",
   variables: [
     {
       inputs: ["md","endDay","startDay"],
       value: (function(md,endDay,startDay){return(
-md`# DeckGL Heatmap
+md`# Chicago Crimes Heatmap
 
 [deck.gl HexagonLayer](http://uber.github.io/deck.gl/#examples/core-layers/hexagon-layer) 
 heatmap of 2018 Chicago crimes in ${endDay - startDay} days.
@@ -31,7 +31,8 @@ select(['', 'HOMICIDE', 'KIDNAPPING', 'NARCOTICS', 'PROSTITUTION', 'ARSON',
                           'OFFENSE INVOLVING CHILDREN',
                           'PUBLIC PEACE VIOLATION',
                           'CRIM SEXUAL ASSAULT',
-                          'INTERFERENCE WITH PUBLIC OFFICER'])
+                          'INTERFERENCE WITH PUBLIC OFFICER',
+                          'LIQUOR LAW VIOLATION', 'STALKING', 'GAMBLING'])
 )})
     },
     {
@@ -282,16 +283,10 @@ md `## Data`
     },
     {
       name: "dataTable",
-      inputs: ["dataUrl","arrow"],
-      value: (async function(dataUrl,arrow)
-{
-  const response = await fetch(dataUrl);
-  const dataTable = await response.arrayBuffer().then(buffer => {
-    return arrow.Table.from(new Uint8Array(buffer));
-  });
-  return dataTable;
-}
-)
+      inputs: ["loadData","dataUrl","arrow"],
+      value: (function(loadData,dataUrl,arrow){return(
+loadData(dataUrl).then(buffer => arrow.Table.from(new Uint8Array(buffer)))
+)})
     },
     {
       name: "data",
@@ -454,8 +449,8 @@ require('apache-arrow')
     },
     {
       from: "@randomfractals/apache-arrow",
-      name: "toDate",
-      remote: "toDate"
+      name: "loadData",
+      remote: "loadData"
     },
     {
       from: "@randomfractals/apache-arrow",
@@ -466,6 +461,11 @@ require('apache-arrow')
       from: "@randomfractals/apache-arrow",
       name: "getMarkdown",
       remote: "getMarkdown"
+    },
+    {
+      from: "@randomfractals/apache-arrow",
+      name: "toDate",
+      remote: "toDate"
     },
     {
       inputs: ["md"],
@@ -579,13 +579,11 @@ const m2 = {
   id: "@randomfractals/apache-arrow",
   variables: [
     {
-      name: "toDate",
+      name: "loadData",
       value: (function(){return(
-function toDate(timestamp) {
-  // Appache Arrow Timestamp is a 64-bit int of milliseconds since the epoch,
-  // represented as two 32-bit ints in JS to preserve precision.
-  // The fist number is the "low" int and the second number is the "high" int.
-  return new Date((timestamp[1] * Math.pow(2, 32) + timestamp[0])/1000);
+async function loadData(dataUrl){
+  const response = await fetch(dataUrl);
+  return await response.arrayBuffer();
 }
 )})
     },
@@ -606,7 +604,7 @@ function range(data, start, end, step) {
       name: "getMarkdown",
       inputs: ["toDate"],
       value: (function(toDate){return(
-function getMarkdown (dataFrame, fields) {
+function getMarkdown (dataFrame, fields, dateFields = []) {
   let markdown = `${fields.join(' | ')}\n --- | --- | ---`; // header row
   let i=0;
   for (let row of dataFrame) {
@@ -616,7 +614,7 @@ function getMarkdown (dataFrame, fields) {
     for (let cell of row) {
       if ( Array.isArray(cell) ) {
         td = '[' + cell.map((value) => value == null ? 'null' : value).join(', ') + ']';
-      } else if (fields[k] === 'Date') { 
+      } else if (fields[k] === 'Date' || dateFields.indexOf(fields[k]) >= 0)  { 
         td = toDate(cell).toLocaleString(); // convert Apache arrow Timestamp to Date and format
       } else {
         td = cell.toString();
@@ -628,12 +626,23 @@ function getMarkdown (dataFrame, fields) {
   return markdown;
 }
 )})
+    },
+    {
+      name: "toDate",
+      value: (function(){return(
+function toDate(timestamp) {
+  // Appache Arrow Timestamp is a 64-bit int of milliseconds since the epoch,
+  // represented as two 32-bit ints in JS to preserve precision.
+  // The fist number is the "low" int and the second number is the "high" int.
+  return new Date((timestamp[1] * Math.pow(2, 32) + timestamp[0])/1000);
+}
+)})
     }
   ]
 };
 
 const notebook = {
-  id: "3b81b175f29201e7@308",
+  id: "3b81b175f29201e7@313",
   modules: [m0,m1,m2]
 };
 

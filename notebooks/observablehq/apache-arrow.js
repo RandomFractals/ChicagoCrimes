@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/apache-arrow
 // Title: Using Apache Arrow JS with Large Datasets
 // Author: Taras Novak (@randomfractals)
-// Version: 817
+// Version: 840
 // Runtime version: 1
 
 const m0 = {
-  id: "87e5b5c3c81a08ce@817",
+  id: "87e5b5c3c81a08ce@840",
   variables: [
     {
       inputs: ["md"],
@@ -69,16 +69,19 @@ md`## Loading Arrow Data`
     },
     {
       name: "crimes",
-      inputs: ["dataUrl","arrow"],
-      value: (async function(dataUrl,arrow)
-{
+      inputs: ["loadData","dataUrl","arrow"],
+      value: (function(loadData,dataUrl,arrow){return(
+loadData(dataUrl).then(buffer => arrow.Table.from(new Uint8Array(buffer)))
+)})
+    },
+    {
+      name: "loadData",
+      value: (function(){return(
+async function loadData(dataUrl){
   const response = await fetch(dataUrl);
-  const dataTable = await response.arrayBuffer().then(buffer => {
-    return arrow.Table.from(new Uint8Array(buffer));
-  });
-  return dataTable;
+  return await response.arrayBuffer();
 }
-)
+)})
     },
     {
       inputs: ["md"],
@@ -215,7 +218,7 @@ md`${getMarkdown(every10KRow, fields)}`
       name: "getMarkdown",
       inputs: ["toDate"],
       value: (function(toDate){return(
-function getMarkdown (dataFrame, fields) {
+function getMarkdown (dataFrame, fields, dateFields = []) {
   let markdown = `${fields.join(' | ')}\n --- | --- | ---`; // header row
   let i=0;
   for (let row of dataFrame) {
@@ -225,7 +228,7 @@ function getMarkdown (dataFrame, fields) {
     for (let cell of row) {
       if ( Array.isArray(cell) ) {
         td = '[' + cell.map((value) => value == null ? 'null' : value).join(', ') + ']';
-      } else if (fields[k] === 'Date') { 
+      } else if (fields[k] === 'Date' || dateFields.indexOf(fields[k]) >= 0)  { 
         td = toDate(cell).toLocaleString(); // convert Apache arrow Timestamp to Date and format
       } else {
         td = cell.toString();
@@ -607,7 +610,7 @@ mappedCrimes.canvas
 {
   const canvas = DOM.canvas(mapWidth, mapHeight);
   const context = canvas.getContext('2d');
-  context.fillStyle = '#333333';
+  context.fillStyle = 'steelblue'; //'#333333';
   let lat, long, x, y, count = 0;
   const startDate = daySliderToDate(startMapDaySlider);
   const endDate = daySliderToDate(endMapDaySlider);
@@ -629,6 +632,12 @@ mappedCrimes.canvas
   return {canvas, count};
 }
 )
+    },
+    {
+      name: "darktheme",
+      value: (function(){return(
+document.body.classList.contains("observablehq--dark")
+)})
     },
     {
       inputs: ["md"],
@@ -664,6 +673,8 @@ md`## Other Apache Arrow JS Notebooks
 [Introduction to Apache Arrow](https://beta.observablehq.com/@theneuralbit/introduction-to-apache-arrow)
 
 [Manipulating Flat Arrays, Arrow Style](https://beta.observablehq.com/@lmeyerov/manipulating-flat-arrays-arrow-style)
+
+[From Apache Arrow to JavaScript Objects](https://beta.observablehq.com/@jheer/from-apache-arrow-to-javascript-objects)
 `
 )})
     },
@@ -750,7 +761,7 @@ require("d3-format")
 };
 
 const notebook = {
-  id: "87e5b5c3c81a08ce@817",
+  id: "87e5b5c3c81a08ce@840",
   modules: [m0,m1]
 };
 

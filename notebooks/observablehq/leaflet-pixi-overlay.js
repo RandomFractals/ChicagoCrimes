@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/leaflet-pixi-overlay
 // Title: Leaflet Pixi Overlay
 // Author: Taras Novak (@randomfractals)
-// Version: 630
+// Version: 633
 // Runtime version: 1
 
 const m0 = {
-  id: "310a1a019d012db9@630",
+  id: "310a1a019d012db9@633",
   variables: [
     {
       name: "intro",
@@ -43,16 +43,10 @@ md`## Data`
     },
     {
       name: "data",
-      inputs: ["dataUrl","arrow"],
-      value: (async function(dataUrl,arrow)
-{
-  const response = await fetch(dataUrl);
-  const dataTable = await response.arrayBuffer().then(buffer => {
-    return arrow.Table.from(new Uint8Array(buffer));
-  });
-  return dataTable;
-}
-)
+      inputs: ["loadData","dataUrl","arrow"],
+      value: (function(loadData,dataUrl,arrow){return(
+loadData(dataUrl).then(buffer => arrow.Table.from(new Uint8Array(buffer)))
+)})
     },
     {
       name: "fields",
@@ -646,8 +640,8 @@ from [Intro to Using Apache Arrow JS with Large Datasets](https://beta.observabl
     },
     {
       from: "@randomfractals/apache-arrow",
-      name: "toDate",
-      remote: "toDate"
+      name: "loadData",
+      remote: "loadData"
     },
     {
       from: "@randomfractals/apache-arrow",
@@ -658,6 +652,11 @@ from [Intro to Using Apache Arrow JS with Large Datasets](https://beta.observabl
       from: "@randomfractals/apache-arrow",
       name: "getMarkdown",
       remote: "getMarkdown"
+    },
+    {
+      from: "@randomfractals/apache-arrow",
+      name: "toDate",
+      remote: "toDate"
     },
     {
       inputs: ["md"],
@@ -1073,13 +1072,11 @@ const m1 = {
   id: "@randomfractals/apache-arrow",
   variables: [
     {
-      name: "toDate",
+      name: "loadData",
       value: (function(){return(
-function toDate(timestamp) {
-  // Appache Arrow Timestamp is a 64-bit int of milliseconds since the epoch,
-  // represented as two 32-bit ints in JS to preserve precision.
-  // The fist number is the "low" int and the second number is the "high" int.
-  return new Date((timestamp[1] * Math.pow(2, 32) + timestamp[0])/1000);
+async function loadData(dataUrl){
+  const response = await fetch(dataUrl);
+  return await response.arrayBuffer();
 }
 )})
     },
@@ -1100,7 +1097,7 @@ function range(data, start, end, step) {
       name: "getMarkdown",
       inputs: ["toDate"],
       value: (function(toDate){return(
-function getMarkdown (dataFrame, fields) {
+function getMarkdown (dataFrame, fields, dateFields = []) {
   let markdown = `${fields.join(' | ')}\n --- | --- | ---`; // header row
   let i=0;
   for (let row of dataFrame) {
@@ -1110,7 +1107,7 @@ function getMarkdown (dataFrame, fields) {
     for (let cell of row) {
       if ( Array.isArray(cell) ) {
         td = '[' + cell.map((value) => value == null ? 'null' : value).join(', ') + ']';
-      } else if (fields[k] === 'Date') { 
+      } else if (fields[k] === 'Date' || dateFields.indexOf(fields[k]) >= 0)  { 
         td = toDate(cell).toLocaleString(); // convert Apache arrow Timestamp to Date and format
       } else {
         td = cell.toString();
@@ -1120,6 +1117,17 @@ function getMarkdown (dataFrame, fields) {
     }
   }
   return markdown;
+}
+)})
+    },
+    {
+      name: "toDate",
+      value: (function(){return(
+function toDate(timestamp) {
+  // Appache Arrow Timestamp is a 64-bit int of milliseconds since the epoch,
+  // represented as two 32-bit ints in JS to preserve precision.
+  // The fist number is the "low" int and the second number is the "high" int.
+  return new Date((timestamp[1] * Math.pow(2, 32) + timestamp[0])/1000);
 }
 )})
     }
@@ -1224,7 +1232,7 @@ require("d3-format")
 };
 
 const notebook = {
-  id: "310a1a019d012db9@630",
+  id: "310a1a019d012db9@633",
   modules: [m0,m1,m2]
 };
 
