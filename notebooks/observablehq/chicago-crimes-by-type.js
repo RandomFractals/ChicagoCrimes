@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-by-type
 // Title: Chicago Crimes by Type
 // Author: Taras Novak (@randomfractals)
-// Version: 205
+// Version: 333
 // Runtime version: 1
 
 const m0 = {
-  id: "647833ad22d939d2@205",
+  id: "647833ad22d939d2@333",
   variables: [
     {
       inputs: ["md"],
@@ -16,19 +16,15 @@ Companion notebook for the 180 days in
 [2018 Chicago Crimes Heatmap](https://beta.observablehq.com/@randomfractals/deck-gl-heatmap)
 and
 [Intro to Using Apache Arrow JS with Large Datasets](https://beta.observablehq.com/@randomfractals/apache-arrow)
-
-working on the simple data series line graphs! standby :)
 `
-
 )})
     },
     {
-      inputs: ["html","crimeData","lineGraph"],
-      value: (function(html,crimeData,lineGraph){return(
+      inputs: ["html","crimeData","textCloud"],
+      value: (function(html,crimeData,textCloud){return(
 html `
-<h2>by Crime Type</h2>
 <div>${Object.keys(crimeData)
-  .map(crimeType => lineGraph(crimeData, crimeType))
+  .map(crimeType => textCloud(crimeData, crimeType))
   .sort((a, b) => a.count - b.count)
   .map(c => c.html)}
 </div>
@@ -42,35 +38,78 @@ html `
 )})
     },
     {
-      inputs: ["html","locationData","lineGraph"],
-      value: (function(html,locationData,lineGraph){return(
-html `
-<h2>by Location</h2>
-<div>${Object.keys(locationData)
-  .map(locationType => lineGraph(locationData, locationType))
-  .sort((a, b) => b.count - a.count)
-  .slice(0, 30)
-  .map(c => c.html)}
-</div>
-<hr />
-`
-)})
-    },
-    {
-      name: "lineGraph",
+      name: "textCloud",
       inputs: ["html"],
       value: (function(html){return(
-function lineGraph(data, crimeType) {
+function textCloud(data, crimeType) {
   console.log('graphing', crimeType, '...');
-  // TODO: gen line graph here  
   const count = data[crimeType].length;
-  const div = html`<div style="display: inline-block; vertical-align: top; height: 60px; padding: 20px;">
+  const div = html`<div style="display: inline-block; vertical-align: top; height: 30px; padding: 10px;">
     <h5>
       <b>${crimeType}</b>
       (${count.toLocaleString()})
     </h5>
     </div>`;  
   return {html: div, count};
+}
+)})
+    },
+    {
+      name: "monthlyCrimeData",
+      inputs: ["crimeData","groupByMonth"],
+      value: (function(crimeData,groupByMonth){return(
+Object.keys(crimeData)
+  .map(crimeType => {
+    return {'crimeType': crimeType, 'monthly': groupByMonth(crimeData, crimeType)};
+  })
+)})
+    },
+    {
+      name: "months",
+      value: (function(){return(
+['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
+)})
+    },
+    {
+      name: "groupByMonth",
+      inputs: ["months"],
+      value: (function(months){return(
+function groupByMonth(data, groupField) {
+  let monthly = {};
+  data[groupField].map(data => {
+    const month = data.date.getMonth();
+    if (month <= months.length) {
+      if (!monthly[months[month]]) {
+        monthly[months[month]] = [];
+      }
+      monthly[months[month]].push(data);
+    }
+  });
+  return monthly;
+}
+)})
+    },
+    {
+      name: "theft",
+      inputs: ["plotMonthlyData","crimeData"],
+      value: (function(plotMonthlyData,crimeData){return(
+plotMonthlyData(crimeData['THEFT'], 'theft')
+)})
+    },
+    {
+      name: "plotMonthlyData",
+      inputs: ["vegalite"],
+      value: (function(vegalite){return(
+function plotMonthlyData(data, type) {
+  return vegalite({
+    data: {values: data},
+    mark: 'line',
+    encoding: {
+      x: {timeUnit: 'month', field: 'date', type: 'temporal'},
+      y: {aggregate: 'count', field: '*', type: 'quantitative'},
+    },
+    title: `${type.toLowerCase()} (${data.length.toLocaleString()})`,    
+  });
 }
 )})
     },
@@ -101,19 +140,17 @@ groupByField(dataTable, 'PrimaryType')
 )})
     },
     {
-      name: "locationData",
-      inputs: ["groupByField","dataTable"],
-      value: (function(groupByField,dataTable){return(
-groupByField(dataTable, 'LocationDescription')
-)})
-    },
-    {
       name: "groupByField",
-      inputs: ["toDate","arrow"],
-      value: (function(toDate,arrow){return(
+      inputs: ["arrow","toDate"],
+      value: (function(arrow,toDate){return(
 function groupByField(data, groupField) {
   let groupData, date, arrested, results = {};
-  data.scan((index) => {
+  const dateFilter = arrow.predicate.custom(i => {
+    const date = toDate(data.getColumn('Date').get(i));
+    return (date.getMonth() <= 6); // through June
+  }, b => 1);
+  data.filter(dateFilter)  
+  .scan((index) => {
     const groupFieldData = groupData(index);
     const groupArray = results[groupFieldData];
     if (!groupArray) {
@@ -158,6 +195,13 @@ function groupByField(data, groupField) {
       inputs: ["require"],
       value: (function(require){return(
 require('apache-arrow')
+)})
+    },
+    {
+      name: "vegalite",
+      inputs: ["require"],
+      value: (function(require){return(
+require("@observablehq/vega-lite@0.1")
 )})
     }
   ]
@@ -230,7 +274,7 @@ function toDate(timestamp) {
 };
 
 const notebook = {
-  id: "647833ad22d939d2@205",
+  id: "647833ad22d939d2@333",
   modules: [m0,m1]
 };
 
