@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-sunburst
 // Title: Chicago Crimes Sunburst
 // Author: Taras Novak (@randomfractals)
-// Version: 406
+// Version: 412
 // Runtime version: 1
 
 const m0 = {
-  id: "ab9d9d8584da9fb8@406",
+  id: "ab9d9d8584da9fb8@412",
   variables: [
     {
       inputs: ["md"],
@@ -14,9 +14,8 @@ md`# Chicago Crimes Sunburst
 
 mod of [sunburst diagram](/@mbostock/d3-sunburst)
 
-...
-
-Click the radial feather to zoom in and white cirlce to zoom out.`
+*UX tip: click on the inner circle radial feather to zoom in and middle white cirlce to zoom out*
+`
 )})
     },
     {
@@ -269,34 +268,9 @@ loadData(dataUrl).then(buffer => arrow.Table.from(new Uint8Array(buffer)))
       remote: "loadData"
     },
     {
-      from: "@randomfractals/apache-arrow",
-      name: "range",
-      remote: "range"
-    },
-    {
-      from: "@randomfractals/apache-arrow",
-      name: "getMarkdown",
-      remote: "getMarkdown"
-    },
-    {
-      from: "@randomfractals/apache-arrow",
-      name: "toDate",
-      remote: "toDate"
-    },
-    {
       from: "@randomfractals/chicago-crimes-by-type",
       name: "groupByField",
       remote: "groupByField"
-    },
-    {
-      from: "@randomfractals/chicago-crimes-by-type",
-      name: "textCloud",
-      remote: "textCloud"
-    },
-    {
-      from: "@randomfractals/chicago-crimes-by-type",
-      name: "plotMonthlyData",
-      remote: "plotMonthlyData"
     },
     {
       name: "arrow",
@@ -317,57 +291,6 @@ const m1 = {
 async function loadData(dataUrl){
   const response = await fetch(dataUrl);
   return await response.arrayBuffer();
-}
-)})
-    },
-    {
-      name: "range",
-      value: (function(){return(
-function range(data, start, end, step) {
-  const slice = [];
-  const rowCount = data.count();
-  for (let i=start; i<end && i <rowCount; i+= step) {
-    slice.push(data.get(i).toArray());
-  }
-  return slice;  
-}
-)})
-    },
-    {
-      name: "getMarkdown",
-      inputs: ["toDate"],
-      value: (function(toDate){return(
-function getMarkdown (dataFrame, fields, dateFields = []) {
-  let markdown = `${fields.join(' | ')}\n --- | --- | ---`; // header row
-  let i=0;
-  for (let row of dataFrame) {
-    markdown += '\n ';
-    let td = '';
-    let k = 0;
-    for (let cell of row) {
-      if ( Array.isArray(cell) ) {
-        td = '[' + cell.map((value) => value == null ? 'null' : value).join(', ') + ']';
-      } else if (fields[k] === 'Date' || dateFields.indexOf(fields[k]) >= 0)  { 
-        td = toDate(cell).toLocaleString(); // convert Apache arrow Timestamp to Date and format
-      } else {
-        td = cell.toString();
-      }
-      markdown += ` ${td} |`;
-      k++;
-    }
-  }
-  return markdown;
-}
-)})
-    },
-    {
-      name: "toDate",
-      value: (function(){return(
-function toDate(timestamp) {
-  // Appache Arrow Timestamp is a 64-bit int of milliseconds since the epoch,
-  // represented as two 32-bit ints in JS to preserve precision.
-  // The fist number is the "low" int and the second number is the "high" int.
-  return new Date((timestamp[1] * Math.pow(2, 32) + timestamp[0])/1000);
 }
 )})
     },
@@ -422,46 +345,6 @@ function groupByField(data, groupField) {
 )})
     },
     {
-      name: "textCloud",
-      inputs: ["html"],
-      value: (function(html){return(
-function textCloud(data, crimeType) {
-  console.log('graphing', crimeType, '...');
-  const count = data[crimeType].length;
-  const div = html`<div style="display: inline-block; vertical-align: top; height: 30px; padding: 10px;">
-    <h5>
-      <b>${crimeType}</b>
-      (${count.toLocaleString()})
-    </h5>
-    </div>`;  
-  return {html: div, count};
-}
-)})
-    },
-    {
-      name: "plotMonthlyData",
-      inputs: ["vegalite"],
-      value: (function(vegalite){return(
-function plotMonthlyData(data, type, width=180, height=180) {
-  return vegalite({
-    data: {values: data},
-    mark: 'bar',
-    width: width,
-    height: height,
-    encoding: {
-      x: {timeUnit: 'month', field: 'date', type: 'ordinal',
-          axis: {title: `${type.toLowerCase()} (${data.length.toLocaleString()})`}
-         },
-      y: {aggregate: 'count', field: '*', type: 'quantitative',
-          axis: {title: false}
-        },
-      color: {value: '#30a2da'}      
-    },
-  });
-}
-)})
-    },
-    {
       name: "arrow",
       inputs: ["require"],
       value: (function(require){return(
@@ -472,19 +355,12 @@ require('apache-arrow')
       from: "@randomfractals/apache-arrow",
       name: "toDate",
       remote: "toDate"
-    },
-    {
-      name: "vegalite",
-      inputs: ["require"],
-      value: (function(require){return(
-require("@observablehq/vega-lite@0.1")
-)})
     }
   ]
 };
 
 const notebook = {
-  id: "ab9d9d8584da9fb8@406",
+  id: "ab9d9d8584da9fb8@412",
   modules: [m0,m1,m2]
 };
 
