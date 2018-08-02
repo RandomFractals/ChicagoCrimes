@@ -1,18 +1,16 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-sunburst
 // Title: Chicago Crimes Sunburst
 // Author: Taras Novak (@randomfractals)
-// Version: 412
+// Version: 415
 // Runtime version: 1
 
 const m0 = {
-  id: "ab9d9d8584da9fb8@412",
+  id: "ab9d9d8584da9fb8@415",
   variables: [
     {
       inputs: ["md"],
       value: (function(md){return(
 md`# Chicago Crimes Sunburst
-
-mod of [sunburst diagram](/@mbostock/d3-sunburst)
 
 *UX tip: click on the inner circle radial feather to zoom in and middle white cirlce to zoom out*
 `
@@ -210,13 +208,6 @@ md `## Crime Data`
 )
     },
     {
-      name: "assaults",
-      inputs: ["flares"],
-      value: (function(flares){return(
-flares.children[0]
-)})
-    },
-    {
       name: "assaultTypes",
       inputs: ["groupChildren","crimeData"],
       value: (function(groupChildren,crimeData){return(
@@ -360,7 +351,7 @@ require('apache-arrow')
 };
 
 const notebook = {
-  id: "ab9d9d8584da9fb8@412",
+  id: "ab9d9d8584da9fb8@415",
   modules: [m0,m1,m2]
 };
 

@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-by-location
 // Title: Chicago Crimes by Location
 // Author: Taras Novak (@randomfractals)
-// Version: 384
+// Version: 385
 // Runtime version: 1
 
 const m0 = {
-  id: "07612a7a7cfd872b@384",
+  id: "07612a7a7cfd872b@385",
   variables: [
     {
       inputs: ["md"],
@@ -93,21 +93,6 @@ groupByField(dataTable, 'LocationDescription')
       remote: "loadData"
     },
     {
-      from: "@randomfractals/apache-arrow",
-      name: "range",
-      remote: "range"
-    },
-    {
-      from: "@randomfractals/apache-arrow",
-      name: "getMarkdown",
-      remote: "getMarkdown"
-    },
-    {
-      from: "@randomfractals/apache-arrow",
-      name: "toDate",
-      remote: "toDate"
-    },
-    {
       from: "@randomfractals/chicago-crimes-by-type",
       name: "groupByField",
       remote: "groupByField"
@@ -141,57 +126,6 @@ const m1 = {
 async function loadData(dataUrl){
   const response = await fetch(dataUrl);
   return await response.arrayBuffer();
-}
-)})
-    },
-    {
-      name: "range",
-      value: (function(){return(
-function range(data, start, end, step) {
-  const slice = [];
-  const rowCount = data.count();
-  for (let i=start; i<end && i <rowCount; i+= step) {
-    slice.push(data.get(i).toArray());
-  }
-  return slice;  
-}
-)})
-    },
-    {
-      name: "getMarkdown",
-      inputs: ["toDate"],
-      value: (function(toDate){return(
-function getMarkdown (dataFrame, fields, dateFields = []) {
-  let markdown = `${fields.join(' | ')}\n --- | --- | ---`; // header row
-  let i=0;
-  for (let row of dataFrame) {
-    markdown += '\n ';
-    let td = '';
-    let k = 0;
-    for (let cell of row) {
-      if ( Array.isArray(cell) ) {
-        td = '[' + cell.map((value) => value == null ? 'null' : value).join(', ') + ']';
-      } else if (fields[k] === 'Date' || dateFields.indexOf(fields[k]) >= 0)  { 
-        td = toDate(cell).toLocaleString(); // convert Apache arrow Timestamp to Date and format
-      } else {
-        td = cell.toString();
-      }
-      markdown += ` ${td} |`;
-      k++;
-    }
-  }
-  return markdown;
-}
-)})
-    },
-    {
-      name: "toDate",
-      value: (function(){return(
-function toDate(timestamp) {
-  // Appache Arrow Timestamp is a 64-bit int of milliseconds since the epoch,
-  // represented as two 32-bit ints in JS to preserve precision.
-  // The fist number is the "low" int and the second number is the "high" int.
-  return new Date((timestamp[1] * Math.pow(2, 32) + timestamp[0])/1000);
 }
 )})
     },
@@ -308,7 +242,7 @@ require("@observablehq/vega-lite@0.1")
 };
 
 const notebook = {
-  id: "07612a7a7cfd872b@384",
+  id: "07612a7a7cfd872b@385",
   modules: [m0,m1,m2]
 };
 
