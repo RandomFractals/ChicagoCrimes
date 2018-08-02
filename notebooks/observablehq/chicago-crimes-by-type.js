@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-by-type
 // Title: Chicago Crimes by Type
 // Author: Taras Novak (@randomfractals)
-// Version: 333
+// Version: 353
 // Runtime version: 1
 
 const m0 = {
-  id: "647833ad22d939d2@333",
+  id: "647833ad22d939d2@353",
   variables: [
     {
       inputs: ["md"],
@@ -100,15 +100,21 @@ plotMonthlyData(crimeData['THEFT'], 'theft')
       name: "plotMonthlyData",
       inputs: ["vegalite"],
       value: (function(vegalite){return(
-function plotMonthlyData(data, type) {
+function plotMonthlyData(data, type, width=180, height=180) {
   return vegalite({
     data: {values: data},
-    mark: 'line',
+    mark: 'bar',
+    width: width,
+    height: height,
     encoding: {
-      x: {timeUnit: 'month', field: 'date', type: 'temporal'},
-      y: {aggregate: 'count', field: '*', type: 'quantitative'},
+      x: {timeUnit: 'month', field: 'date', type: 'ordinal',
+          axis: {title: `${type.toLowerCase()} (${data.length.toLocaleString()})`}
+         },
+      y: {aggregate: 'count', field: '*', type: 'quantitative',
+          axis: {title: false}
+        },
+      color: {value: '#30a2da'}      
     },
-    title: `${type.toLowerCase()} (${data.length.toLocaleString()})`,    
   });
 }
 )})
@@ -144,7 +150,7 @@ groupByField(dataTable, 'PrimaryType')
       inputs: ["arrow","toDate"],
       value: (function(arrow,toDate){return(
 function groupByField(data, groupField) {
-  let groupData, date, arrested, results = {};
+  let groupData, date, arrested, info, results = {};
   const dateFilter = arrow.predicate.custom(i => {
     const date = toDate(data.getColumn('Date').get(i));
     return (date.getMonth() <= 6); // through June
@@ -160,11 +166,13 @@ function groupByField(data, groupField) {
     dataRecord[groupField] = groupFieldData;
     dataRecord['date'] = toDate(date(index));
     dataRecord['arrested'] = arrested(index);
+    dataRecord['info'] = info(index);
     results[groupFieldData].push(dataRecord);
   }, (batch) => {
     groupData = arrow.predicate.col(groupField).bind(batch);
     date = arrow.predicate.col('Date').bind(batch);
     arrested = arrow.predicate.col('Arrest').bind(batch);
+    info = arrow.predicate.col('Description').bind(batch);
   });
   return results;
 }
@@ -274,7 +282,7 @@ function toDate(timestamp) {
 };
 
 const notebook = {
-  id: "647833ad22d939d2@333",
+  id: "647833ad22d939d2@353",
   modules: [m0,m1]
 };
 
