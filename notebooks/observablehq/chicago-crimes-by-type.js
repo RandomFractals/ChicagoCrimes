@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-by-type
 // Title: Chicago Crimes by Type
 // Author: Taras Novak (@randomfractals)
-// Version: 353
+// Version: 354
 // Runtime version: 1
 
 const m0 = {
-  id: "647833ad22d939d2@353",
+  id: "647833ad22d939d2@354",
   variables: [
     {
       inputs: ["md"],
@@ -150,7 +150,7 @@ groupByField(dataTable, 'PrimaryType')
       inputs: ["arrow","toDate"],
       value: (function(arrow,toDate){return(
 function groupByField(data, groupField) {
-  let groupData, date, arrested, info, results = {};
+  let groupData, date, location, arrested, info, results = {};
   const dateFilter = arrow.predicate.custom(i => {
     const date = toDate(data.getColumn('Date').get(i));
     return (date.getMonth() <= 6); // through June
@@ -165,12 +165,14 @@ function groupByField(data, groupField) {
     const dataRecord = {};
     dataRecord[groupField] = groupFieldData;
     dataRecord['date'] = toDate(date(index));
+    dataRecord['location'] = location(index);    
     dataRecord['arrested'] = arrested(index);
     dataRecord['info'] = info(index);
     results[groupFieldData].push(dataRecord);
   }, (batch) => {
     groupData = arrow.predicate.col(groupField).bind(batch);
     date = arrow.predicate.col('Date').bind(batch);
+    location = arrow.predicate.col('LocationDescription').bind(batch);
     arrested = arrow.predicate.col('Arrest').bind(batch);
     info = arrow.predicate.col('Description').bind(batch);
   });
@@ -282,7 +284,7 @@ function toDate(timestamp) {
 };
 
 const notebook = {
-  id: "647833ad22d939d2@353",
+  id: "647833ad22d939d2@354",
   modules: [m0,m1]
 };
 
