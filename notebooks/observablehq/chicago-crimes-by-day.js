@@ -1,20 +1,18 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-by-day
 // Title: Chicago Crimes by Day
 // Author: Taras Novak (@randomfractals)
-// Version: 389
+// Version: 407
 // Runtime version: 1
 
 const m0 = {
-  id: "e901da8a28f3f554@389",
+  id: "e901da8a28f3f554@407",
   variables: [
     {
       inputs: ["md"],
       value: (function(md){return(
 md`# Chicago Crimes by Day
 
-This chart shows daily Chicago crimes for 6 months of 2018.
-
-*UX tip: mouse over to see the number of reported crimes per day*`
+*mouseover to see the number of reported crimes per day*`
 )})
     },
     {
@@ -22,8 +20,8 @@ This chart shows daily Chicago crimes for 6 months of 2018.
       inputs: ["html"],
       value: (function(html){return(
 html`<select>
-  <option value=sunday>Sunday-based weeks
   <option value=monday>Monday-based weeks
+  <option value=sunday>Sunday-based weeks
   <option value=weekday>Weekdays only
 </select>`
 )})
@@ -80,7 +78,7 @@ html`<select>
       .attr("y", d => countDay(d.date) * cellSize + 0.5)
       .attr("fill", d => color(d.value))
     .append("title")
-      .text(d => `${formatDate(d.date)}: ${d.value.toLocaleString()}`);
+      .text(d => `${d.value.toLocaleString()} on ${formatDate(d.date)}`);
 
   const month = year.append("g")
     .selectAll("g")
@@ -153,7 +151,7 @@ function pathMonth(t) {
       name: "formatDate",
       inputs: ["d3"],
       value: (function(d3){return(
-d3.timeFormat("%x")
+d3.timeFormat('%A, %B %e')
 )})
     },
     {
@@ -229,7 +227,7 @@ Object.keys(dailyData)
     {
       name: "timezoneOffset",
       value: (function(){return(
-6*60*60*1000
+(new Date().getTimezoneOffset() + 60) * 60 * 1000
 )})
     },
     {
@@ -245,8 +243,7 @@ function groupByDay(data) {
   data.filter(dateFilter)  
   .scan((index) => {
     const day = toDate(date(index)).toISOString().substring(0, 10); // ISO date string
-    const groupArray = results[day];
-    if (!groupArray) {
+    if (!results[day]) {
       results[day] = []; 
     }
     const dataRecord = {};
@@ -312,7 +309,7 @@ function toDate(timestamp) {
 };
 
 const notebook = {
-  id: "e901da8a28f3f554@389",
+  id: "e901da8a28f3f554@407",
   modules: [m0,m1]
 };
 
