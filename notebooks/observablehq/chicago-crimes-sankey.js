@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-sankey
 // Title: Chicago Crimes Sankey
 // Author: Taras Novak (@randomfractals)
-// Version: 246
+// Version: 253
 // Runtime version: 1
 
 const m0 = {
-  id: "cb6fc670dec4d7bf@246",
+  id: "cb6fc670dec4d7bf@253",
   variables: [
     {
       inputs: ["md"],
@@ -65,7 +65,7 @@ md`# Chicago Crimes Sankey`
       .attr("stroke-width", d => Math.max(1, d.width));
 
   link.append("title")
-      .text(d => `${d.source.name} → ${d.target.name}\n${d.value.toLocaleString()}`);
+      .text(d => `${d.value.toLocaleString()} ${d.source.name} / ${d.target.name}`);
 
   svg.append("g")
       .style("font", "10px sans-serif")
@@ -231,6 +231,35 @@ crimeByLocation
 )
     },
     {
+      name: "groupByField",
+      inputs: ["arrow","toDate"],
+      value: (function(arrow,toDate){return(
+function groupByField(data, groupField) {
+  let groupData, location, results = {};
+  const dateFilter = arrow.predicate.custom(i => {
+    const date = toDate(data.getColumn('Date').get(i));
+    return (date.getMonth() <= 6); // through June
+  }, b => 1);
+  data.filter(dateFilter)  
+  .scan((index) => {
+    const groupFieldData = groupData(index);
+    const groupArray = results[groupFieldData];
+    if (!groupArray) {
+      results[groupFieldData] = []; 
+    }
+    const dataRecord = {};
+    dataRecord[groupField] = groupFieldData;
+    dataRecord['location'] = location(index);    
+    results[groupFieldData].push(dataRecord);
+  }, (batch) => {
+    groupData = arrow.predicate.col(groupField).bind(batch);
+    location = arrow.predicate.col('LocationDescription').bind(batch);
+  });
+  return results;
+}
+)})
+    },
+    {
       name: "dataUrl",
       value: (function(){return(
 'https://raw.githubusercontent.com/RandomFractals/ChicagoCrimes/master/data/2018/chicago-crimes-2018.arrow'
@@ -249,9 +278,9 @@ loadData(dataUrl).then(buffer => arrow.Table.from(new Uint8Array(buffer)))
       remote: "loadData"
     },
     {
-      from: "@randomfractals/chicago-crimes-by-type",
-      name: "groupByField",
-      remote: "groupByField"
+      from: "@randomfractals/apache-arrow",
+      name: "toDate",
+      remote: "toDate"
     },
     {
       from: "@randomfractals/chicago-crimes-sunburst",
@@ -295,59 +324,6 @@ function toDate(timestamp) {
 };
 
 const m2 = {
-  id: "@randomfractals/chicago-crimes-by-type",
-  variables: [
-    {
-      name: "groupByField",
-      inputs: ["arrow","toDate"],
-      value: (function(arrow,toDate){return(
-function groupByField(data, groupField) {
-  let groupData, date, location, arrested, info, results = {};
-  const dateFilter = arrow.predicate.custom(i => {
-    const date = toDate(data.getColumn('Date').get(i));
-    return (date.getMonth() <= 6); // through June
-  }, b => 1);
-  data.filter(dateFilter)  
-  .scan((index) => {
-    const groupFieldData = groupData(index);
-    const groupArray = results[groupFieldData];
-    if (!groupArray) {
-      results[groupFieldData] = []; 
-    }
-    const dataRecord = {};
-    dataRecord[groupField] = groupFieldData;
-    dataRecord['date'] = toDate(date(index));
-    dataRecord['location'] = location(index);    
-    dataRecord['arrested'] = arrested(index);
-    dataRecord['info'] = info(index);
-    results[groupFieldData].push(dataRecord);
-  }, (batch) => {
-    groupData = arrow.predicate.col(groupField).bind(batch);
-    date = arrow.predicate.col('Date').bind(batch);
-    location = arrow.predicate.col('LocationDescription').bind(batch);
-    arrested = arrow.predicate.col('Arrest').bind(batch);
-    info = arrow.predicate.col('Description').bind(batch);
-  });
-  return results;
-}
-)})
-    },
-    {
-      name: "arrow",
-      inputs: ["require"],
-      value: (function(require){return(
-require('apache-arrow')
-)})
-    },
-    {
-      from: "@randomfractals/apache-arrow",
-      name: "toDate",
-      remote: "toDate"
-    }
-  ]
-};
-
-const m3 = {
   id: "@randomfractals/chicago-crimes-sunburst",
   variables: [
     {
@@ -373,8 +349,8 @@ function groupChildren(arrayData, groupField) {
 };
 
 const notebook = {
-  id: "cb6fc670dec4d7bf@246",
-  modules: [m0,m1,m2,m3]
+  id: "cb6fc670dec4d7bf@253",
+  modules: [m0,m1,m2]
 };
 
 export default notebook;
