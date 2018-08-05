@@ -1,18 +1,19 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-sunburst
 // Title: Chicago Crimes Sunburst
 // Author: Taras Novak (@randomfractals)
-// Version: 415
+// Version: 417
 // Runtime version: 1
 
 const m0 = {
-  id: "ab9d9d8584da9fb8@415",
+  id: "ab9d9d8584da9fb8@417",
   variables: [
     {
       inputs: ["md"],
       value: (function(md){return(
 md`# Chicago Crimes Sunburst
 
-*UX tip: click on the inner circle radial feather to zoom in and middle white cirlce to zoom out*
+*UX tip: click on the inner circle radial feather to zoom in and middle white cirlce to zoom out,
+mouse over for the reported crime counts*
 `
 )})
     },
@@ -46,7 +47,7 @@ md`# Chicago Crimes Sunburst
       .on("click", clicked);
 
   path.append("title")
-      .text(d => `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${format(d.value)}`);
+      .text(d => `${format(d.value)} ${d.ancestors().map(d => d.data.name).reverse().join("/").replace('flare/', '')}`);
 
   const label = g.append("g")
       .attr("pointer-events", "none")
@@ -307,7 +308,7 @@ const m2 = {
       inputs: ["arrow","toDate"],
       value: (function(arrow,toDate){return(
 function groupByField(data, groupField) {
-  let groupData, date, arrested, info, results = {};
+  let groupData, date, location, arrested, info, results = {};
   const dateFilter = arrow.predicate.custom(i => {
     const date = toDate(data.getColumn('Date').get(i));
     return (date.getMonth() <= 6); // through June
@@ -322,12 +323,14 @@ function groupByField(data, groupField) {
     const dataRecord = {};
     dataRecord[groupField] = groupFieldData;
     dataRecord['date'] = toDate(date(index));
+    dataRecord['location'] = location(index);    
     dataRecord['arrested'] = arrested(index);
     dataRecord['info'] = info(index);
     results[groupFieldData].push(dataRecord);
   }, (batch) => {
     groupData = arrow.predicate.col(groupField).bind(batch);
     date = arrow.predicate.col('Date').bind(batch);
+    location = arrow.predicate.col('LocationDescription').bind(batch);
     arrested = arrow.predicate.col('Arrest').bind(batch);
     info = arrow.predicate.col('Description').bind(batch);
   });
@@ -351,7 +354,7 @@ require('apache-arrow')
 };
 
 const notebook = {
-  id: "ab9d9d8584da9fb8@415",
+  id: "ab9d9d8584da9fb8@417",
   modules: [m0,m1,m2]
 };
 
