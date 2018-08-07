@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/deck-gl-heatmap
 // Title: Chicago Crimes Heatmap
 // Author: Taras Novak (@randomfractals)
-// Version: 313
+// Version: 314
 // Runtime version: 1
 
 const m0 = {
-  id: "3b81b175f29201e7@313",
+  id: "3b81b175f29201e7@314",
   variables: [
     {
       inputs: ["md","endDay","startDay"],
@@ -13,7 +13,7 @@ const m0 = {
 md`# Chicago Crimes Heatmap
 
 [deck.gl HexagonLayer](http://uber.github.io/deck.gl/#examples/core-layers/hexagon-layer) 
-heatmap of 2018 Chicago crimes in ${endDay - startDay} days.
+heatmap of reported 2018 Chicago crimes in ${endDay - startDay} days.
 
 *tip: toggle crimeType, startDay/endDay:*
 `
@@ -642,7 +642,7 @@ function toDate(timestamp) {
 };
 
 const notebook = {
-  id: "3b81b175f29201e7@313",
+  id: "3b81b175f29201e7@314",
   modules: [m0,m1,m2]
 };
 
