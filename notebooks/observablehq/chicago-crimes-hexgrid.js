@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-hexgrid
 // Title: Chicago Crimes Hexgrid Map
 // Author: Taras Novak (@randomfractals)
-// Version: 323
+// Version: 447
 // Runtime version: 1
 
 const m0 = {
-  id: "c332b856c58a6cbf@323",
+  id: "c332b856c58a6cbf@447",
   variables: [
     {
       inputs: ["md"],
@@ -16,28 +16,27 @@ md `# Chicago Crimes Hexgrid Map
 with [d3-hexgrid](https://github.com/larsvers/d3-hexgrid)
 
 #hexagon maps FTW! :)
+
+*tip: mouseover hexagons for the reported crime counts per hexagon block*
 `
 )})
     },
     {
       name: "map",
-      inputs: ["DOM","mapWidth","mapHeight","d3","grid","hexagons","colorScale"],
-      value: (function(DOM,mapWidth,mapHeight,d3,grid,hexagons,colorScale)
-{
-  const svg = DOM.svg(mapWidth, mapHeight)
-  d3.select(svg)
-    .selectAll('.hex')
-    .data(grid.layout)
-    .enter()
-    .append('path')
-    .attr('class', 'hex')
-    .attr('d', hexagons.hexagon())
-    .attr('transform', d => `translate(${d.x}, ${d.y})`)
-    .style('fill', d => !d.pointDensity ? '#fff' : colorScale(d.pointDensity))
-    .style('stroke', '#ccc')
-  return svg;
-}
-)
+      inputs: ["html","width","mapWidth","mapHeight"],
+      value: (function(html,width,mapWidth,mapHeight){return(
+html `<div style="height:${width*.6}px">
+  <svg width="${mapWidth}" height="${mapHeight}"></svg>
+  <div class="tooltip"></div>
+</div>`
+)})
+    },
+    {
+      name: "svg",
+      inputs: ["drawHexgrid","map","data"],
+      value: (function(drawHexgrid,map,data){return(
+drawHexgrid(map, data)
+)})
     },
     {
       inputs: ["md","dayToDate","startDay","endDay","data"],
@@ -195,6 +194,141 @@ hexagons.grid
 )})
     },
     {
+      name: "drawHexgrid",
+      inputs: ["d3","grid","hexagons","colorScale"],
+      value: (function(d3,grid,hexagons,colorScale){return(
+function drawHexgrid(mapContainer, data) {
+  // draw heaxgrid map  
+  const margin = {top: 30, right: 30, bottom: 30, left: 30};  
+  const svg = d3.select('svg')
+    .attr('transform', `translate(${margin.left} ${margin.top})`);
+  svg.append('g')
+    .selectAll('.hex')
+    .data(grid.layout)
+    .enter()
+    .append('path')
+    .attr('class', 'hex')
+    .attr('d', hexagons.hexagon())
+    .attr('transform', d => `translate(${d.x}, ${d.y})`)
+    .style('fill', d => !d.pointDensity ? '#fff' : colorScale(d.pointDensity))
+    .style('stroke', '#ccc')
+    .style('stroke-opacity', 0.5);
+
+  // add tooltips
+  const tip = d3.select('.tooltip');
+  d3.selectAll('.hex').on('mouseover', (d) => {
+    tip.style('opacity', 1)
+      .style('top', `${d3.event.pageY - 180}px`)
+      .style('left', `${d3.event.pageX + 10}px`);
+    tip.html(`${d.datapoints} reported crimes`);
+      /* full data point stats
+      `cover: ${formatNum(d.cover)}<br>
+      points: ${d.datapoints}<br>
+      points wt: ${formatNum(d.datapointsWt)}<br>
+      density: ${formatNum(d.pointDensity)}`);*/
+  })
+  .on('mouseout', tip.style('opacity', 0));
+  
+  // add legends bar
+  //drawLegendBar(svg);
+  
+  return svg;
+}
+)})
+    },
+    {
+      name: "drawLegendBar",
+      inputs: ["hexagons","d3","grid","colorScale","mapHeight","exponent","hexgrid","formatNum"],
+      value: (function(hexagons,d3,grid,colorScale,mapHeight,exponent,hexgrid,formatNum){return(
+function drawLegendBar(svg) {
+  // gen. legend data
+  const legendScale = 8 / hexagons.radius;
+  const equalRange = n => d3.range(n).map(d => d / (n - 1));
+  const densityDist = grid.layout
+    .map(d => d.pointDensity)
+    .sort(d3.ascending)
+    .filter(d => d);
+  const splitRange = equalRange(11);
+  const indeces = splitRange.map(d => Math.floor(d * (densityDist.length - 1)));
+  const densityPick = indeces.map(d => densityDist[d]);
+  const legendData = densityPick.map(d => ({
+    density: d,
+    colour: colorScale(d)
+  }));
+  
+  // create legend bar
+  const legendBar = svg
+    .append('g')
+    .attr('class', 'legend')
+    .attr('transform', `translate(0, ${mapHeight})`);
+  
+  legendBar.append('text')
+    .text(`Point density (scale exponent: ${exponent})`)
+    .attr('fill', '#555')
+    .attr('font-family', 'sans-serif')
+    .attr('font-size', '0.55rem')
+    .attr('font-weight', 'bold')
+    .attr('dy', 19)
+    .attr('dx', -4);
+
+  const legend = legendBar
+    .selectAll('.legendKey')
+    .data(legendData)
+    .enter()
+    .append('g')
+    .attr('class', 'legendKey')
+    .attr('transform', (d, i) => `translate(${i * Math.sqrt(3) * hexgrid.hexRadius() * legendScale}, 0)`);
+  
+  legend.append('g')
+    .attr('transform', `scale(${legendScale})`)
+    .append('path')
+    .attr('d', hexagons.hexagon())
+    .style('fill', d => d.colour)
+    .style('stroke-width', 0.5)
+    .style('stroke', '#fff');
+
+  legend.append('text').text(
+      (d, i, n) => (i == 0 || i == n.length - 1 ? formatNum(d.density) : '')
+    )
+    .attr('fill', '#555')
+    .attr('font-family', 'sans-serif')
+    .attr('font-size', '0.7rem')
+    .attr('font-weight', 'bold')
+    .attr('text-anchor', 'middle')
+    .attr('dy', -10);
+}
+)})
+    },
+    {
+      name: "formatNum",
+      inputs: ["d3"],
+      value: (function(d3){return(
+d3.format('.2')
+)})
+    },
+    {
+      name: "tooltipStyle",
+      inputs: ["html"],
+      value: (function(html){return(
+html `
+<style type="text/css">
+.tooltip {
+  position: absolute;
+  opacity: 0;
+  font-family: Nunito, sans-serif;
+  font-size: 12px;
+  pointer-events: none;
+  background-color: #333;
+  color: #ccc;
+  padding: 3px;
+  border-radius: 3px;
+  box-shadow: 1px 2px 4px #888;
+}
+</style>
+`
+)})
+    },
+    {
       inputs: ["md"],
       value: (function(md){return(
 md `#### Data`
@@ -306,7 +440,8 @@ md `#### Libs`
       name: "d3",
       inputs: ["require"],
       value: (function(require){return(
-require('d3-fetch', 'd3-geo', 'd3-geo-projection', 'd3-hexgrid', 'd3-scale', 'd3-scale-chromatic', 'd3-selection')
+require('d3-fetch', 'd3-geo', 'd3-geo-projection', 'd3-hexgrid', 
+  'd3-scale', 'd3-scale-chromatic', 'd3-format', 'd3-array', 'd3-selection')
 )})
     },
     {
@@ -463,7 +598,7 @@ require("d3-format")
 };
 
 const notebook = {
-  id: "c332b856c58a6cbf@323",
+  id: "c332b856c58a6cbf@447",
   modules: [m0,m1,m2]
 };
 
