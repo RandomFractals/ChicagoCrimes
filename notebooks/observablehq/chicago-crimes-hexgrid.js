@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-hexgrid
 // Title: Chicago Crimes Hexgrid Map
 // Author: Taras Novak (@randomfractals)
-// Version: 447
+// Version: 510
 // Runtime version: 1
 
 const m0 = {
-  id: "c332b856c58a6cbf@447",
+  id: "c332b856c58a6cbf@510",
   variables: [
     {
       inputs: ["md"],
@@ -17,41 +17,8 @@ with [d3-hexgrid](https://github.com/larsvers/d3-hexgrid)
 
 #hexagon maps FTW! :)
 
-*tip: mouseover hexagons for the reported crime counts per hexagon block*
+*tip: toggle crimeType, startDay/endDay, mouseover hexagons for block counts:*
 `
-)})
-    },
-    {
-      name: "map",
-      inputs: ["html","width","mapWidth","mapHeight"],
-      value: (function(html,width,mapWidth,mapHeight){return(
-html `<div style="height:${width*.6}px">
-  <svg width="${mapWidth}" height="${mapHeight}"></svg>
-  <div class="tooltip"></div>
-</div>`
-)})
-    },
-    {
-      name: "svg",
-      inputs: ["drawHexgrid","map","data"],
-      value: (function(drawHexgrid,map,data){return(
-drawHexgrid(map, data)
-)})
-    },
-    {
-      inputs: ["md","dayToDate","startDay","endDay","data"],
-      value: (function(md,dayToDate,startDay,endDay,data){return(
-md `
-**from:** ${dayToDate(startDay).toLocaleDateString()}
-**to:** ${dayToDate(endDay).toLocaleDateString()}
-**total:** ${data.length.toLocaleString()}
-`
-)})
-    },
-    {
-      inputs: ["md"],
-      value: (function(md){return(
-md `#### Hexgrid Map Toggles`
 )})
     },
     {
@@ -98,6 +65,30 @@ slider({min: 0, max: days, step: 1, value: days})
       name: "endDay",
       inputs: ["Generators","viewof endDay"],
       value: (G, _) => G.input(_)
+    },
+    {
+      name: "map",
+      inputs: ["html","width","mapWidth","mapHeight","crimeType","dayToDate","startDay","endDay","data"],
+      value: (function(html,width,mapWidth,mapHeight,crimeType,dayToDate,startDay,endDay,data){return(
+html `<div style="height:${width*.6}px">
+  <svg width="${mapWidth}" height="${mapHeight}"></svg>
+  <div class="data-panel">
+    <h3>2018 Chicago Crime Reports</h3>
+    <i>${crimeType}</i>
+    <br />
+    <b>${dayToDate(startDay).toLocaleDateString()} - ${dayToDate(endDay).toLocaleDateString()}</b>
+    <br />
+    <i>total:</i> <b>${data.length.toLocaleString()}</b>
+  </div>
+  <div class="tooltip"></div>
+</div>`
+)})
+    },
+    {
+      inputs: ["md"],
+      value: (function(md){return(
+md `#### Hexgrid Map Toggles`
+)})
     },
     {
       name: "viewof blockRadius",
@@ -194,12 +185,19 @@ hexagons.grid
 )})
     },
     {
+      name: "svg",
+      inputs: ["drawHexgrid","data"],
+      value: (function(drawHexgrid,data){return(
+drawHexgrid(data)
+)})
+    },
+    {
       name: "drawHexgrid",
       inputs: ["d3","grid","hexagons","colorScale"],
       value: (function(d3,grid,hexagons,colorScale){return(
-function drawHexgrid(mapContainer, data) {
+function drawHexgrid(data) {
   // draw heaxgrid map  
-  const margin = {top: 30, right: 30, bottom: 30, left: 30};  
+  const margin = {top: 0, right: 0, bottom: 0, left: 0};  
   const svg = d3.select('svg')
     .attr('transform', `translate(${margin.left} ${margin.top})`);
   svg.append('g')
@@ -321,6 +319,27 @@ html `
   background-color: #333;
   color: #ccc;
   padding: 3px;
+  border-radius: 3px;
+  box-shadow: 1px 2px 4px #888;
+}
+</style>
+`
+)})
+    },
+    {
+      name: "dataPanelStyle",
+      inputs: ["html"],
+      value: (function(html){return(
+html `
+<style type="text/css">
+.data-panel {
+  position: absolute;
+  top: 0;
+  font-family: Nunito, sans-serif;
+  font-size: 12px;
+  pointer-events: none;
+  background-color: #f6f6f6;
+  padding: 10px;
   border-radius: 3px;
   box-shadow: 1px 2px 4px #888;
 }
@@ -598,7 +617,7 @@ require("d3-format")
 };
 
 const notebook = {
-  id: "c332b856c58a6cbf@447",
+  id: "c332b856c58a6cbf@510",
   modules: [m0,m1,m2]
 };
 
