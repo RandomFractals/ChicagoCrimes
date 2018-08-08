@@ -1,30 +1,30 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-hexgrid
-// Title: Chicago Crimes Hexgrid
+// Title: Chicago Crimes Hexgrid Map
 // Author: Taras Novak (@randomfractals)
-// Version: 274
+// Version: 323
 // Runtime version: 1
 
 const m0 = {
-  id: "c332b856c58a6cbf@274",
+  id: "c332b856c58a6cbf@323",
   variables: [
     {
       inputs: ["md"],
       value: (function(md){return(
-md `# Chicago Crimes Hexgrid
+md `# Chicago Crimes Hexgrid Map
 
 2D remake of [3D deck-gl-heatmap](https://beta.observablehq.com/@randomfractals/deck-gl-heatmap)
 with [d3-hexgrid](https://github.com/larsvers/d3-hexgrid)
 
-#hexagons FTW! :)
+#hexagon maps FTW! :)
 `
 )})
     },
     {
       name: "map",
-      inputs: ["DOM","w","h","d3","grid","hexagons","colorScale"],
-      value: (function(DOM,w,h,d3,grid,hexagons,colorScale)
+      inputs: ["DOM","mapWidth","mapHeight","d3","grid","hexagons","colorScale"],
+      value: (function(DOM,mapWidth,mapHeight,d3,grid,hexagons,colorScale)
 {
-  const svg = DOM.svg(w, h)
+  const svg = DOM.svg(mapWidth, mapHeight)
   d3.select(svg)
     .selectAll('.hex')
     .data(grid.layout)
@@ -40,21 +40,76 @@ with [d3-hexgrid](https://github.com/larsvers/d3-hexgrid)
 )
     },
     {
-      inputs: ["md"],
-      value: (function(md){return(
-md `#### Hexgrid Toggles`
+      inputs: ["md","dayToDate","startDay","endDay","data"],
+      value: (function(md,dayToDate,startDay,endDay,data){return(
+md `
+**from:** ${dayToDate(startDay).toLocaleDateString()}
+**to:** ${dayToDate(endDay).toLocaleDateString()}
+**total:** ${data.length.toLocaleString()}
+`
 )})
     },
     {
-      name: "viewof r",
+      inputs: ["md"],
+      value: (function(md){return(
+md `#### Hexgrid Map Toggles`
+)})
+    },
+    {
+      name: "viewof crimeType",
+      inputs: ["select"],
+      value: (function(select){return(
+select(['', 'HOMICIDE', 'KIDNAPPING', 'NARCOTICS', 'PROSTITUTION', 'ARSON', 
+                          'THEFT', 'BATTERY', 'CRIMINAL DAMAGE', 'ASSAULT', 'SEX OFFENSE',
+                          'OTHER OFFENSE', 'DECEPTIVE PRACTICE',
+                          'BURGLARY', 'MOTOR VEHICLE THEFT', 'ROBBERY',
+                          'CRIMINAL TRESPASS', 'WEAPONS VIOLATION',
+                          'OFFENSE INVOLVING CHILDREN',
+                          'PUBLIC PEACE VIOLATION',
+                          'CRIM SEXUAL ASSAULT',
+                          'INTERFERENCE WITH PUBLIC OFFICER',
+                          'LIQUOR LAW VIOLATION', 'STALKING', 'GAMBLING'])
+)})
+    },
+    {
+      name: "crimeType",
+      inputs: ["Generators","viewof crimeType"],
+      value: (G, _) => G.input(_)
+    },
+    {
+      name: "viewof startDay",
+      inputs: ["slider","days"],
+      value: (function(slider,days){return(
+slider({min: 0, max: days, step: 1, value: 0})
+)})
+    },
+    {
+      name: "startDay",
+      inputs: ["Generators","viewof startDay"],
+      value: (G, _) => G.input(_)
+    },
+    {
+      name: "viewof endDay",
+      inputs: ["slider","days"],
+      value: (function(slider,days){return(
+slider({min: 0, max: days, step: 1, value: days})
+)})
+    },
+    {
+      name: "endDay",
+      inputs: ["Generators","viewof endDay"],
+      value: (G, _) => G.input(_)
+    },
+    {
+      name: "viewof blockRadius",
       inputs: ["slider"],
       value: (function(slider){return(
 slider({min: 1, max: 8, step: 1, value: 4})
 )})
     },
     {
-      name: "r",
-      inputs: ["Generators","viewof r"],
+      name: "blockRadius",
+      inputs: ["Generators","viewof blockRadius"],
       value: (G, _) => G.input(_)
     },
     {
@@ -70,17 +125,17 @@ slider({min: 1, max: 12, step: 1, value:6})
       value: (G, _) => G.input(_)
     },
     {
-      name: "w",
+      name: "mapWidth",
       inputs: ["width"],
       value: (function(width){return(
 width
 )})
     },
     {
-      name: "h",
-      inputs: ["w"],
-      value: (function(w){return(
-Math.round(w * .6)
+      name: "mapHeight",
+      inputs: ["mapWidth"],
+      value: (function(mapWidth){return(
+Math.round(mapWidth * .6)
 )})
     },
     {
@@ -101,9 +156,9 @@ await d3.json('https://raw.githubusercontent.com/smartchicago/chicago-atlas/mast
     },
     {
       name: "projection",
-      inputs: ["d3","w","h","geo"],
-      value: (function(d3,w,h,geo){return(
-d3.geoMercator().fitSize([w, h], geo)
+      inputs: ["d3","mapWidth","mapHeight","geo"],
+      value: (function(d3,mapWidth,mapHeight,geo){return(
+d3.geoMercator().fitSize([mapWidth, mapHeight], geo)
 )})
     },
     {
@@ -115,14 +170,14 @@ d3.geoPath().projection(projection)
     },
     {
       name: "hexgrid",
-      inputs: ["d3","w","h","geo","projection","path","r"],
-      value: (function(d3,w,h,geo,projection,path,r){return(
+      inputs: ["d3","mapWidth","mapHeight","geo","projection","path","blockRadius"],
+      value: (function(d3,mapWidth,mapHeight,geo,projection,path,blockRadius){return(
 d3.hexgrid()
-  .extent([w, h])
+  .extent([mapWidth, mapHeight])
   .geography(geo)
   .projection(projection)
   .pathGenerator(path)
-  .hexRadius(r)
+  .hexRadius(blockRadius)
 )})
     },
     {
@@ -159,26 +214,82 @@ loadData(dataUrl).then(buffer => arrow.Table.from(new Uint8Array(buffer)))
 )})
     },
     {
-      name: "data",
-      inputs: ["toJSON","dataTable"],
-      value: (function(toJSON,dataTable){return(
-toJSON(dataTable)
+      name: "startDate",
+      value: (function(){return(
+new Date('1/1/2018')
 )})
     },
     {
-      name: "toJSON",
-      inputs: ["arrow"],
-      value: (function(arrow){return(
-function toJSON(dataTable) {
-  let lat, lng, results = [];
-  dataTable.scan((index) => {
+      name: "endDate",
+      value: (function(){return(
+new Date('6/30/2018')
+)})
+    },
+    {
+      name: "days",
+      inputs: ["endDate","startDate","millisPerDay"],
+      value: (function(endDate,startDate,millisPerDay){return(
+Math.ceil((endDate - startDate) / millisPerDay)
+)})
+    },
+    {
+      name: "millisPerDay",
+      value: (function(){return(
+24 * 60 * 60 * 1000
+)})
+    },
+    {
+      name: "dayToDate",
+      inputs: ["startDate","millisPerDay"],
+      value: (function(startDate,millisPerDay){return(
+function dayToDate(day) {
+ return new Date(startDate.getTime() + day*millisPerDay) 
+}
+)})
+    },
+    {
+      name: "fields",
+      inputs: ["dataTable"],
+      value: (function(dataTable){return(
+dataTable.schema.fields.map(f => f.name)
+)})
+    },
+    {
+      name: "data",
+      inputs: ["filterData","dataTable","crimeType","startDate","startDay","millisPerDay","endDay"],
+      value: (function(filterData,dataTable,crimeType,startDate,startDay,millisPerDay,endDay){return(
+filterData(dataTable, crimeType, 
+  new Date(startDate.getTime() + startDay*millisPerDay),
+  new Date(startDate.getTime() + endDay*millisPerDay))
+)})
+    },
+    {
+      name: "filterData",
+      inputs: ["arrow","toDate"],
+      value: (function(arrow,toDate){return(
+function filterData(dataTable, crimeType, startDate, endDate) {
+  let lat, lng, block, type, info, date, results = [];
+  const dataFilter = arrow.predicate.custom(i => {
+    const date = toDate(dataTable.getColumn('Date').get(i));
+    const primaryType = dataTable.getColumn('PrimaryType').get(i);
+    return date >= startDate && date <= endDate && 
+      (crimeType === '' || primaryType === crimeType);
+  }, b => 1);
+  dataTable.filter(dataFilter)   
+    .scan((index) => {
       results.push({
-        'Latitude': lat(index),
-        'Longitude': lng(index),
+        'lat': lat(index),
+        'lng': lng(index),
+        index
+        //'info': `${block(index)}<br />${type(index)}<br />${info(index)}<br />${toDate(date(index)).toLocaleString()}`
       });
     }, (batch) => {
       lat = arrow.predicate.col('Latitude').bind(batch);
-      lng = arrow.predicate.col('Longitude').bind(batch);    
+      lng = arrow.predicate.col('Longitude').bind(batch);
+      //block = arrow.predicate.col('Block').bind(batch);
+      //type = arrow.predicate.col('PrimaryType').bind(batch);
+      //info = arrow.predicate.col('Description').bind(batch);    
+      //date = arrow.predicate.col('Date').bind(batch);    
     }
   );
   return results;
@@ -219,6 +330,11 @@ require('apache-arrow')
       from: "@jashkenas/inputs",
       name: "slider",
       remote: "slider"
+    },
+    {
+      from: "@jashkenas/inputs",
+      name: "select",
+      remote: "select"
     }
   ]
 };
@@ -266,6 +382,35 @@ function slider(config = {}) {
     attributes: {min, max, step, value},
     getValue: input => Math.round(input.valueAsNumber * precision) / precision
   });
+}
+)})
+    },
+    {
+      name: "select",
+      inputs: ["input","html"],
+      value: (function(input,html){return(
+function select(config = {}) {
+  let {value: formValue, title, description, submit, multiple, size, options} = config;
+  if (Array.isArray(config)) options = config;
+  options = options.map(o => typeof o === "string" ? {value: o, label: o} : o);
+  const form = input({
+    type: "select", title, description, submit, 
+    getValue: input => {
+      const selected = Array.prototype.filter.call(input.options, i => i.selected).map(i => i.value);
+      return multiple ? selected : selected[0];
+    },
+    form: html`
+      <form>
+        <select name="input" ${multiple ? `multiple size="${size || options.length}"` : ""}>
+          ${options.map(({value, label}) => `
+            <option value="${value}" ${value === formValue ? "selected" : ""}>${label}</option>
+          `)}
+        </select>
+      </form>
+    `
+  });
+  form.output.remove();
+  return form;
 }
 )})
     },
@@ -318,7 +463,7 @@ require("d3-format")
 };
 
 const notebook = {
-  id: "c332b856c58a6cbf@274",
+  id: "c332b856c58a6cbf@323",
   modules: [m0,m1,m2]
 };
 
