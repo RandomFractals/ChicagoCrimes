@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-hexgrid
 // Title: Chicago Crimes Hexgrid Map
 // Author: Taras Novak (@randomfractals)
-// Version: 510
+// Version: 528
 // Runtime version: 1
 
 const m0 = {
-  id: "c332b856c58a6cbf@510",
+  id: "c332b856c58a6cbf@528",
   variables: [
     {
       inputs: ["md"],
@@ -17,7 +17,7 @@ with [d3-hexgrid](https://github.com/larsvers/d3-hexgrid)
 
 #hexagon maps FTW! :)
 
-*tip: toggle crimeType, startDay/endDay, mouseover hexagons for block counts:*
+*tip: toggle crimeType, startDay/endDay, and mouseover hexagons for block counts:*
 `
 )})
     },
@@ -68,17 +68,16 @@ slider({min: 0, max: days, step: 1, value: days})
     },
     {
       name: "map",
-      inputs: ["html","width","mapWidth","mapHeight","crimeType","dayToDate","startDay","endDay","data"],
-      value: (function(html,width,mapWidth,mapHeight,crimeType,dayToDate,startDay,endDay,data){return(
+      inputs: ["html","width","mapWidth","mapHeight","crimeType","data","formatTime","dayToDate","startDay","endDay"],
+      value: (function(html,width,mapWidth,mapHeight,crimeType,data,formatTime,dayToDate,startDay,endDay){return(
 html `<div style="height:${width*.6}px">
   <svg width="${mapWidth}" height="${mapHeight}"></svg>
   <div class="data-panel">
-    <h3>2018 Chicago Crime Reports</h3>
-    <i>${crimeType}</i>
-    <br />
-    <b>${dayToDate(startDay).toLocaleDateString()} - ${dayToDate(endDay).toLocaleDateString()}</b>
-    <br />
+    <b><i>${crimeType}</i></b>
     <i>total:</i> <b>${data.length.toLocaleString()}</b>
+    <br />
+    <b>${formatTime(dayToDate(startDay))}</b> <i>through</i> <b>${formatTime(dayToDate(endDay))}, 2018</b>
+    <br />
   </div>
   <div class="tooltip"></div>
 </div>`
@@ -305,6 +304,13 @@ d3.format('.2')
 )})
     },
     {
+      name: "formatTime",
+      inputs: ["d3"],
+      value: (function(d3){return(
+d3.timeFormat('%b %e')
+)})
+    },
+    {
       name: "tooltipStyle",
       inputs: ["html"],
       value: (function(html){return(
@@ -460,7 +466,7 @@ md `#### Libs`
       inputs: ["require"],
       value: (function(require){return(
 require('d3-fetch', 'd3-geo', 'd3-geo-projection', 'd3-hexgrid', 
-  'd3-scale', 'd3-scale-chromatic', 'd3-format', 'd3-array', 'd3-selection')
+  'd3-scale', 'd3-scale-chromatic', 'd3-format', 'd3-time-format', 'd3-array', 'd3-selection')
 )})
     },
     {
@@ -617,7 +623,7 @@ require("d3-format")
 };
 
 const notebook = {
-  id: "c332b856c58a6cbf@510",
+  id: "c332b856c58a6cbf@528",
   modules: [m0,m1,m2]
 };
 
