@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-hexgrid
 // Title: Chicago Crimes Hexgrid Map
 // Author: Taras Novak (@randomfractals)
-// Version: 528
+// Version: 535
 // Runtime version: 1
 
 const m0 = {
-  id: "c332b856c58a6cbf@528",
+  id: "c332b856c58a6cbf@535",
   variables: [
     {
       inputs: ["md"],
@@ -14,8 +14,6 @@ md `# Chicago Crimes Hexgrid Map
 
 2D remake of [3D deck-gl-heatmap](https://beta.observablehq.com/@randomfractals/deck-gl-heatmap)
 with [d3-hexgrid](https://github.com/larsvers/d3-hexgrid)
-
-#hexagon maps FTW! :)
 
 *tip: toggle crimeType, startDay/endDay, and mouseover hexagons for block counts:*
 `
@@ -211,11 +209,16 @@ function drawHexgrid(data) {
     .style('stroke', '#ccc')
     .style('stroke-opacity', 0.5);
 
+  d3.selectAll('.hex').on('click', (d) => {
+    // todo: add hexagon click data points info display to data panel
+    console.log('click', d);
+  })
+
   // add tooltips
   const tip = d3.select('.tooltip');
   d3.selectAll('.hex').on('mouseover', (d) => {
     tip.style('opacity', 1)
-      .style('top', `${d3.event.pageY - 180}px`)
+      .style('top', `${d3.event.pageY - 280}px`)
       .style('left', `${d3.event.pageX + 10}px`);
     tip.html(`${d.datapoints} reported crimes`);
       /* full data point stats
@@ -439,16 +442,16 @@ function filterData(dataTable, crimeType, startDate, endDate) {
       results.push({
         'lat': lat(index),
         'lng': lng(index),
-        index
-        //'info': `${block(index)}<br />${type(index)}<br />${info(index)}<br />${toDate(date(index)).toLocaleString()}`
+        index,
+        'info': `${block(index)}<br />${type(index)}<br />${info(index)}<br />${toDate(date(index)).toLocaleString()}`
       });
     }, (batch) => {
       lat = arrow.predicate.col('Latitude').bind(batch);
       lng = arrow.predicate.col('Longitude').bind(batch);
-      //block = arrow.predicate.col('Block').bind(batch);
-      //type = arrow.predicate.col('PrimaryType').bind(batch);
-      //info = arrow.predicate.col('Description').bind(batch);    
-      //date = arrow.predicate.col('Date').bind(batch);    
+      block = arrow.predicate.col('Block').bind(batch);
+      type = arrow.predicate.col('PrimaryType').bind(batch);
+      info = arrow.predicate.col('Description').bind(batch);    
+      date = arrow.predicate.col('Date').bind(batch);    
     }
   );
   return results;
@@ -623,7 +626,7 @@ require("d3-format")
 };
 
 const notebook = {
-  id: "c332b856c58a6cbf@528",
+  id: "c332b856c58a6cbf@535",
   modules: [m0,m1,m2]
 };
 
