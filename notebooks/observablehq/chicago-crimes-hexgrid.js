@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-hexgrid
 // Title: Chicago Crimes Hexgrid Map
 // Author: Taras Novak (@randomfractals)
-// Version: 588
+// Version: 601
 // Runtime version: 1
 
 const m0 = {
-  id: "c332b856c58a6cbf@588",
+  id: "c332b856c58a6cbf@601",
   variables: [
     {
       inputs: ["md"],
@@ -15,7 +15,8 @@ md `# Chicago Crimes Hexgrid Map
 2D remake of [3D deck-gl-heatmap](https://beta.observablehq.com/@randomfractals/deck-gl-heatmap)
 with [d3-hexgrid](https://github.com/larsvers/d3-hexgrid)
 
-*tip: toggle crimeType, startDay/endDay, and mouseover hexagons for block counts:*
+*tip: toggle crimeType, startDay/endDay, and mouseover hexagons for the reported crime counts per block. 
+Click on the hexagon for the reported crimes info on that block.*
 `
 )})
     },
@@ -224,7 +225,7 @@ function drawHexgrid(data) {
   const tip = d3.select('.tooltip');
   d3.selectAll('.hex').on('mouseover', (d) => {
     tip.style('opacity', 1)
-      .style('top', `${d3.event.pageY - 280}px`)
+      .style('top', `${d3.event.pageY - 310}px`)
       .style('left', `${d3.event.pageX + 10}px`);
     tip.html(`${d.datapoints} reported crimes`);
       /* full data point stats
@@ -658,7 +659,7 @@ require("d3-format")
 };
 
 const notebook = {
-  id: "c332b856c58a6cbf@588",
+  id: "c332b856c58a6cbf@601",
   modules: [m0,m1,m2]
 };
 
