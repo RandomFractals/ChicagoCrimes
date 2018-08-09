@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-hexgrid
 // Title: Chicago Crimes Hexgrid Map
 // Author: Taras Novak (@randomfractals)
-// Version: 559
+// Version: 574
 // Runtime version: 1
 
 const m0 = {
-  id: "c332b856c58a6cbf@559",
+  id: "c332b856c58a6cbf@574",
   variables: [
     {
       inputs: ["md"],
@@ -171,7 +171,7 @@ d3.hexgrid()
       name: "hexagons",
       inputs: ["hexgrid","data"],
       value: (function(hexgrid,data){return(
-hexgrid(data)
+hexgrid(data, ['index'])
 )})
     },
     {
@@ -190,8 +190,8 @@ drawHexgrid(data)
     },
     {
       name: "drawHexgrid",
-      inputs: ["d3","grid","hexagons","colorScale"],
-      value: (function(d3,grid,hexagons,colorScale){return(
+      inputs: ["d3","grid","hexagons","colorScale","getDataPoints"],
+      value: (function(d3,grid,hexagons,colorScale,getDataPoints){return(
 function drawHexgrid(data) {
   // draw heaxgrid map  
   const margin = {top: 0, right: 0, bottom: 0, left: 0};  
@@ -209,9 +209,9 @@ function drawHexgrid(data) {
     .style('stroke', '#ccc')
     .style('stroke-opacity', 0.5);
 
-  d3.selectAll('.hex').on('click', (points) => {
+  d3.selectAll('.hex').on('click', (mapPoints) => {
     // todo: add hexagon click data points info display to data panel
-    console.log('click', points);
+    console.log('click:data:', getDataPoints(mapPoints));
   })
 
   // add tooltips
@@ -457,6 +457,30 @@ function filterData(dataTable, crimeType, startDate, endDate) {
 )})
     },
     {
+      name: "getDataPoints",
+      inputs: ["dataTable","toDate"],
+      value: (function(dataTable,toDate){return(
+function getDataPoints(mapPoints) {
+  const dataPoints = [];
+  mapPoints.map(point => {
+    const dataRow = dataTable.get(point.index);
+    const dataPoint = {
+      // from fields
+      block: dataRow.get(2),
+      location: dataRow.get(3).toLowerCase(),
+      type: dataRow.get(4).toLowerCase(),
+      info: dataRow.get(5).toLowerCase(),
+      arrested: dataRow.get(6),
+      domestic: dataRow.get(7),
+      date: toDate(dataRow.get(9))
+    }
+    dataPoints.push(dataPoint);
+  });
+  return dataPoints;
+}
+)})
+    },
+    {
       inputs: ["md"],
       value: (function(md){return(
 md `#### Libs`
@@ -624,7 +648,7 @@ require("d3-format")
 };
 
 const notebook = {
-  id: "c332b856c58a6cbf@559",
+  id: "c332b856c58a6cbf@574",
   modules: [m0,m1,m2]
 };
 
