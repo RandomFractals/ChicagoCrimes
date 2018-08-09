@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-hexgrid
 // Title: Chicago Crimes Hexgrid Map
 // Author: Taras Novak (@randomfractals)
-// Version: 587
+// Version: 588
 // Runtime version: 1
 
 const m0 = {
-  id: "c332b856c58a6cbf@587",
+  id: "c332b856c58a6cbf@588",
   variables: [
     {
       inputs: ["md"],
@@ -350,7 +350,6 @@ html `
   top: 0;
   font-family: Nunito, sans-serif;
   font-size: 12px;
-  pointer-events: none;
   background-color: #f6f6f6;
   padding: 10px;
   border-radius: 3px;
@@ -659,7 +658,7 @@ require("d3-format")
 };
 
 const notebook = {
-  id: "c332b856c58a6cbf@587",
+  id: "c332b856c58a6cbf@588",
   modules: [m0,m1,m2]
 };
 
