@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-hexgrid
 // Title: Chicago Crimes Hexgrid Map
 // Author: Taras Novak (@randomfractals)
-// Version: 574
+// Version: 587
 // Runtime version: 1
 
 const m0 = {
-  id: "c332b856c58a6cbf@574",
+  id: "c332b856c58a6cbf@587",
   variables: [
     {
       inputs: ["md"],
@@ -76,6 +76,7 @@ html `<div style="height:${width*.6}px">
     <br />
     <b>${formatTime(dayToDate(startDay))}</b> <i>through</i> <b>${formatTime(dayToDate(endDay))}, 2018</b>
     <br />
+    <div class="data-list"></div>
   </div>
   <div class="tooltip"></div>
 </div>`
@@ -209,9 +210,14 @@ function drawHexgrid(data) {
     .style('stroke', '#ccc')
     .style('stroke-opacity', 0.5);
 
+  const dataList = document.querySelector('.data-list');
   d3.selectAll('.hex').on('click', (mapPoints) => {
-    // todo: add hexagon click data points info display to data panel
-    console.log('click:data:', getDataPoints(mapPoints));
+    const dataPoints = getDataPoints(mapPoints);
+    dataList.innerHTML = dataPoints.reduce(
+      (html, d) => html + 
+        `<hr>${d.block}<br />(${d.location})<br />${d.type}: ${d.info}<br />${d.date.toLocaleString()}`, ''
+    );
+    //console.log('hexagon:click:data:', dataPoints);
   })
 
   // add tooltips
@@ -335,8 +341,8 @@ html `
     },
     {
       name: "dataPanelStyle",
-      inputs: ["html"],
-      value: (function(html){return(
+      inputs: ["html","mapHeight"],
+      value: (function(html,mapHeight){return(
 html `
 <style type="text/css">
 .data-panel {
@@ -349,6 +355,11 @@ html `
   padding: 10px;
   border-radius: 3px;
   box-shadow: 1px 2px 4px #888;
+}
+.data-list {
+  max-height: ${mapHeight - 100}px;
+  width: 180px;
+  overflow: auto;
 }
 </style>
 `
@@ -648,7 +659,7 @@ require("d3-format")
 };
 
 const notebook = {
-  id: "c332b856c58a6cbf@574",
+  id: "c332b856c58a6cbf@587",
   modules: [m0,m1,m2]
 };
 
