@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-hexgrid
 // Title: Chicago Crimes Hexgrid Map
 // Author: Taras Novak (@randomfractals)
-// Version: 535
+// Version: 559
 // Runtime version: 1
 
 const m0 = {
-  id: "c332b856c58a6cbf@535",
+  id: "c332b856c58a6cbf@559",
   variables: [
     {
       inputs: ["md"],
@@ -209,9 +209,9 @@ function drawHexgrid(data) {
     .style('stroke', '#ccc')
     .style('stroke-opacity', 0.5);
 
-  d3.selectAll('.hex').on('click', (d) => {
+  d3.selectAll('.hex').on('click', (points) => {
     // todo: add hexagon click data points info display to data panel
-    console.log('click', d);
+    console.log('click', points);
   })
 
   // add tooltips
@@ -229,7 +229,7 @@ function drawHexgrid(data) {
   })
   .on('mouseout', tip.style('opacity', 0));
   
-  // add legends bar
+  // todo: fix this bar display
   //drawLegendBar(svg);
   
   return svg;
@@ -257,8 +257,7 @@ function drawLegendBar(svg) {
   }));
   
   // create legend bar
-  const legendBar = svg
-    .append('g')
+  const legendBar = svg.append('g')
     .attr('class', 'legend')
     .attr('transform', `translate(0, ${mapHeight})`);
   
@@ -271,8 +270,7 @@ function drawLegendBar(svg) {
     .attr('dy', 19)
     .attr('dx', -4);
 
-  const legend = legendBar
-    .selectAll('.legendKey')
+  const legend = legendBar.selectAll('.legendKey')
     .data(legendData)
     .enter()
     .append('g')
@@ -443,7 +441,7 @@ function filterData(dataTable, crimeType, startDate, endDate) {
         'lat': lat(index),
         'lng': lng(index),
         index,
-        'info': `${block(index)}<br />${type(index)}<br />${info(index)}<br />${toDate(date(index)).toLocaleString()}`
+        //'info': `${block(index)}<br />${type(index)}<br />${info(index)}<br />${toDate(date(index)).toLocaleString()}`
       });
     }, (batch) => {
       lat = arrow.predicate.col('Latitude').bind(batch);
@@ -626,7 +624,7 @@ require("d3-format")
 };
 
 const notebook = {
-  id: "c332b856c58a6cbf@535",
+  id: "c332b856c58a6cbf@559",
   modules: [m0,m1,m2]
 };
 
