@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/deck-gl-heatmap
 // Title: Chicago Crimes Heatmap
 // Author: Taras Novak (@randomfractals)
-// Version: 314
+// Version: 346
 // Runtime version: 1
 
 const m0 = {
-  id: "3b81b175f29201e7@314",
+  id: "3b81b175f29201e7@346",
   variables: [
     {
       inputs: ["md","endDay","startDay"],
@@ -65,20 +65,20 @@ slider({min: 0, max: days, step: 1, value: days})
       value: (G, _) => G.input(_)
     },
     {
-      inputs: ["md","dayToDate","startDay","endDay","data"],
-      value: (function(md,dayToDate,startDay,endDay,data){return(
-md `
-**from:** ${dayToDate(startDay).toLocaleDateString()}
-**to:** ${dayToDate(endDay).toLocaleDateString()}
-**total:** ${data.length.toLocaleString()}
-`
-)})
-    },
-    {
       name: "mapContainer",
-      inputs: ["html","width"],
-      value: (function(html,width){return(
-html `<div style="height:${width*.6}px"><div id="tooltip"></div></div>`
+      inputs: ["html","width","crimeType","data","formatTime","dayToDate","startDay","endDay"],
+      value: (function(html,width,crimeType,data,formatTime,dayToDate,startDay,endDay){return(
+html `<div style="height:${width*.6}px">
+  <div class="data-panel">
+    <b><i>${crimeType}</i></b>
+    <i>total:</i> <b>${data.length.toLocaleString()}</b>
+    <br />
+    <b>${formatTime(dayToDate(startDay))}</b> <i>through</i> <b>${formatTime(dayToDate(endDay))}, 2018</b>
+    <br />
+    <div class="data-list"></div>
+  </div>
+  <div id="tooltip"></div>
+</div>`
 )})
     },
     {
@@ -170,8 +170,8 @@ md `## DeckGL Map Setup`
     },
     {
       name: "heatmap",
-      inputs: ["deck","colorRange","data","blockRadius","hexagonCoverage","upperPercentile","lightSettings","onHover","deckgl"],
-      value: (function(deck,colorRange,data,blockRadius,hexagonCoverage,upperPercentile,lightSettings,onHover,deckgl)
+      inputs: ["deck","colorRange","data","blockRadius","hexagonCoverage","upperPercentile","lightSettings","onHover","onClick","deckgl"],
+      value: (function(deck,colorRange,data,blockRadius,hexagonCoverage,upperPercentile,lightSettings,onHover,onClick,deckgl)
 {
   const hexagonLayer = new deck.HexagonLayer({
     id: 'heatmap',
@@ -187,7 +187,9 @@ md `## DeckGL Map Setup`
     upperPercentile,
     lightSettings,
     pickable: true,
-    onHover
+    autoHighlight: true,
+    onHover: onHover,
+    onClick: onClick
   });
   deckgl.setProps({layers: [hexagonLayer]});
   return hexagonLayer;
@@ -204,20 +206,34 @@ mapContainer.querySelector('#tooltip')
     {
       name: "onHover",
       inputs: ["tooltip"],
-      value: (function(tooltip)
-{
-  return function (info) {
-    const {x, y, object} = info;
-    if (object) {
-      tooltip.style.left = `${x}px`;    
-      tooltip.style.top = `${y}px`;
-      tooltip.innerHTML = `${object.points.length} crime reports`;
-    } else { 
-      tooltip.innerHTML = '';
-    }
-  };
+      value: (function(tooltip){return(
+function onHover (info) {
+  const {x, y, object} = info;
+  if (object) {
+    tooltip.style.left = `${x}px`;    
+    tooltip.style.top = `${y}px`;
+    tooltip.innerHTML = `${object.points.length} crime reports`;
+  } else { 
+    tooltip.innerHTML = '';
+  }
 }
-)
+)})
+    },
+    {
+      name: "onClick",
+      inputs: ["getDataPoints"],
+      value: (function(getDataPoints){return(
+function onClick(info) {
+  const mapPoints = info.object.points;
+  const dataPoints = getDataPoints(mapPoints);
+  const dataList = document.querySelector('.data-list');
+  dataList.innerHTML = dataPoints.reduce(
+    (html, d) => html + 
+    `<hr>${d.block}<br />(${d.location})<br />${d.type}: ${d.info}<br />${d.date.toLocaleString()}`, ''
+  );
+  //console.log('clicked data points:', dataPoints);  
+}
+)})
     },
     {
       name: "colorRange",
@@ -270,6 +286,32 @@ html `
   font-size: 10px;
   z-index: 9;
   pointer-events: none;
+}
+</style>
+`
+)})
+    },
+    {
+      name: "dataPanelStyle",
+      inputs: ["html","width"],
+      value: (function(html,width){return(
+html `
+<style type="text/css">
+.data-panel {
+  position: absolute;
+  top: 0;
+  font-family: Nunito, sans-serif;
+  font-size: 12px;
+  background-color: #f6f6f6;
+  padding: 10px;
+  border-radius: 3px;
+  box-shadow: 1px 2px 4px #888;
+  z-index: 10;
+}
+.data-list {
+  max-height: ${width*.6 - 100}px;
+  width: 180px;
+  overflow: auto;
 }
 </style>
 `
@@ -338,6 +380,13 @@ dayToDate(1)
 )})
     },
     {
+      name: "formatTime",
+      inputs: ["d3"],
+      value: (function(d3){return(
+d3.timeFormat('%b %e')
+)})
+    },
+    {
       name: "fields",
       inputs: ["dataTable"],
       value: (function(dataTable){return(
@@ -374,6 +423,30 @@ function filterData(data, crimeType, startDate, endDate) {
     }
   );
   return results;
+}
+)})
+    },
+    {
+      name: "getDataPoints",
+      inputs: ["dataTable","toDate"],
+      value: (function(dataTable,toDate){return(
+function getDataPoints(mapPoints) {
+  const dataPoints = [];
+  mapPoints.map(point => {
+    const dataRow = dataTable.get(point.index);
+    const dataPoint = {
+      // from fields
+      block: dataRow.get(2),
+      location: dataRow.get(3).toLowerCase(),
+      type: dataRow.get(4),
+      info: dataRow.get(5).toLowerCase(),
+      arrested: dataRow.get(6),
+      domestic: dataRow.get(7),
+      date: toDate(dataRow.get(9))
+    }
+    dataPoints.push(dataPoint);
+  });
+  return dataPoints;
 }
 )})
     },
@@ -642,7 +715,7 @@ function toDate(timestamp) {
 };
 
 const notebook = {
-  id: "3b81b175f29201e7@314",
+  id: "3b81b175f29201e7@346",
   modules: [m0,m1,m2]
 };
 
