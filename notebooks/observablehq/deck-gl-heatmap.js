@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/deck-gl-heatmap
 // Title: Chicago Crimes Heatmap
 // Author: Taras Novak (@randomfractals)
-// Version: 346
+// Version: 352
 // Runtime version: 1
 
 const m0 = {
-  id: "3b81b175f29201e7@346",
+  id: "3b81b175f29201e7@352",
   variables: [
     {
       inputs: ["md","endDay","startDay"],
@@ -220,13 +220,19 @@ function onHover (info) {
 )})
     },
     {
+      name: "dataList",
+      inputs: ["mapContainer"],
+      value: (function(mapContainer){return(
+mapContainer.querySelector('.data-list')
+)})
+    },
+    {
       name: "onClick",
-      inputs: ["getDataPoints"],
-      value: (function(getDataPoints){return(
+      inputs: ["getDataPoints","dataList"],
+      value: (function(getDataPoints,dataList){return(
 function onClick(info) {
   const mapPoints = info.object.points;
   const dataPoints = getDataPoints(mapPoints);
-  const dataList = document.querySelector('.data-list');
   dataList.innerHTML = dataPoints.reduce(
     (html, d) => html + 
     `<hr>${d.block}<br />(${d.location})<br />${d.type}: ${d.info}<br />${d.date.toLocaleString()}`, ''
@@ -715,7 +721,7 @@ function toDate(timestamp) {
 };
 
 const notebook = {
-  id: "3b81b175f29201e7@346",
+  id: "3b81b175f29201e7@352",
   modules: [m0,m1,m2]
 };
 
