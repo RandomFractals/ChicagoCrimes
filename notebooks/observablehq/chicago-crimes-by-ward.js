@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-by-ward
 // Title: Chicago Crimes by Ward Flubber
 // Author: Taras Novak (@randomfractals)
-// Version: 254
+// Version: 259
 // Runtime version: 1
 
 const m0 = {
-  id: "a2d64365818685b3@254",
+  id: "a2d64365818685b3@259",
   variables: [
     {
       inputs: ["md"],
@@ -60,24 +60,22 @@ html`
 {
   const svg = d3.select('#chart');
   const maxVal = d3.max(wards.map(f => f.val));
-
+  
   if (svg.select('path').empty()) {
-    // color scale
+    // create chart svg elements
     const color = d3.scaleQuantize()
       .domain([0, maxVal])
       .range(d3.schemeOrRd[5]);
-
-    // svg data group
     const dataGroup = svg.append('g');
     dataGroup.selectAll('path')
       .data(wards)
       .enter().append('path')
-      .attr('d', d => convertRectPath(d.x*squareSize, d.y*squareSize, squareSize, squareSize))
-      .attr('fill', d => color(d.val))
-      .style('stroke', '#000')
-      .style('stroke-width', 0.3);
-    
-    // group text
+        .attr('d', d => convertRectPath(d.x*squareSize, d.y*squareSize, squareSize, squareSize))
+        .attr('fill', d => color(d.val))
+        .style('stroke', '#000')
+        .style('stroke-width', 0.3)
+      .append('title')
+        .text(d => `${d.val.toLocaleString()} crime reports`);
     const groupText = svg.append('g');
     groupText.selectAll('text')
       .data(wards)
@@ -88,47 +86,51 @@ html`
       .style('font-size', '10px')
       .style('font-family', 'Verdana')
       .text(d => d.properties.ward);
-  } else {
+  } else {    
+    // create flubber interpolator
     let interpolator, textX, textY;
-    if (chartType === 'cartogram') {
-      interpolator = function (d) {
-        return flubber.toRect(
-          d3.select(this).attr('d'),
-          d.x * squareSize,
-          d.y * squareSize,
-          squareSize,
-          squareSize
-        );
-      }
-      textX = d => (d.x * squareSize) + squareSize / 2;
-      textY = d => (d.y * squareSize) + squareSize / 2;
-    } else if (chartType === 'map') {
-      interpolator = function (d) {
-        return flubber.interpolate(d3.select(this).attr('d'), geoPath.path(d));
-      }
-      textX = d => geoPath.path.centroid(d)[0];
-      textY = d => geoPath.path.centroid(d)[1];
-    } else if (chartType === 'bars') {
-      const barY = d3.scaleLinear()
-        .domain([0, maxVal])
-        .range([0, width]);
-      const barX = d3.scaleBand()
-        .domain(wards.map(f => f.properties.ward))
-        .range([0, height]);
-      interpolator = function (d) {
-        return flubber.toRect(
-          d3.select(this).attr('d'),
-          25,
-          barX(d.properties.ward),
-          barY(d.val),
-          barX.bandwidth()
-        );
-      }
-      textX = 10;
-      textY = d => barX(d.properties.ward) + (barX.bandwidth() / 2) + 2.5;
+    switch (chartType) {
+      case 'cartogram':
+        interpolator = function (d) {
+          return flubber.toRect(
+            d3.select(this).attr('d'),
+            d.x * squareSize, d.y * squareSize,
+            squareSize, squareSize
+          );
+        }
+        textX = d => (d.x * squareSize) + squareSize / 2;
+        textY = d => (d.y * squareSize) + squareSize / 2;
+        break;
+      case 'map':
+        interpolator = function (d) {
+          return flubber.interpolate(d3.select(this).attr('d'), geoPath.path(d));
+        }
+        textX = d => geoPath.path.centroid(d)[0];
+        textY = d => geoPath.path.centroid(d)[1];
+        break;
+      case 'bars':
+        const barY = d3.scaleLinear()
+          .domain([0, maxVal])
+          .range([0, width]);
+        const barX = d3.scaleBand()
+          .domain(wards.map(f => f.properties.ward))
+          .range([0, height]);
+        interpolator = function (d) {
+          return flubber.toRect(
+            d3.select(this).attr('d'),
+            25,
+            barX(d.properties.ward),
+            barY(d.val),
+            barX.bandwidth()
+          );
+        }
+        textX = 10;
+        textY = d => barX(d.properties.ward) + (barX.bandwidth() / 2) + 2.5;
+      break;
     }
     
     if (interpolator !== undefined) {
+      // animate chart type change transition
       svg.selectAll("path")
         .transition()
         .delay((d, i) => i * 20)
@@ -411,11 +413,16 @@ const m2 = {
   variables: [
     {
       name: "groupByField",
-      inputs: ["toDate","arrow"],
-      value: (function(toDate,arrow){return(
+      inputs: ["arrow","toDate"],
+      value: (function(arrow,toDate){return(
 function groupByField(data, groupField) {
-  let groupData, date, arrested, results = {};
-  data.scan((index) => {
+  let groupData, date, location, arrested, info, results = {};
+  const dateFilter = arrow.predicate.custom(i => {
+    const date = toDate(data.getColumn('Date').get(i));
+    return (date.getMonth() <= 6); // through June
+  }, b => 1);
+  data.filter(dateFilter)  
+  .scan((index) => {
     const groupFieldData = groupData(index);
     const groupArray = results[groupFieldData];
     if (!groupArray) {
@@ -424,21 +431,20 @@ function groupByField(data, groupField) {
     const dataRecord = {};
     dataRecord[groupField] = groupFieldData;
     dataRecord['date'] = toDate(date(index));
+    dataRecord['location'] = location(index);    
     dataRecord['arrested'] = arrested(index);
+    dataRecord['info'] = info(index);
     results[groupFieldData].push(dataRecord);
   }, (batch) => {
     groupData = arrow.predicate.col(groupField).bind(batch);
     date = arrow.predicate.col('Date').bind(batch);
+    location = arrow.predicate.col('LocationDescription').bind(batch);
     arrested = arrow.predicate.col('Arrest').bind(batch);
+    info = arrow.predicate.col('Description').bind(batch);
   });
   return results;
 }
 )})
-    },
-    {
-      from: "@randomfractals/apache-arrow",
-      name: "toDate",
-      remote: "toDate"
     },
     {
       name: "arrow",
@@ -446,12 +452,17 @@ function groupByField(data, groupField) {
       value: (function(require){return(
 require('apache-arrow')
 )})
+    },
+    {
+      from: "@randomfractals/apache-arrow",
+      name: "toDate",
+      remote: "toDate"
     }
   ]
 };
 
 const notebook = {
-  id: "a2d64365818685b3@254",
+  id: "a2d64365818685b3@259",
   modules: [m0,m1,m2]
 };
 
