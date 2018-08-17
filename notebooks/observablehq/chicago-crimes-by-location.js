@@ -1,18 +1,18 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-by-location
 // Title: Chicago Crimes by Location
 // Author: Taras Novak (@randomfractals)
-// Version: 385
+// Version: 386
 // Runtime version: 1
 
 const m0 = {
-  id: "07612a7a7cfd872b@385",
+  id: "07612a7a7cfd872b@386",
   variables: [
     {
       inputs: ["md"],
       value: (function(md){return(
 md`# Chicago Crimes by Location
 
-Companion notebook for the 180 days in 
+Companion notebook for the 
 [2018 Chicago Crimes Heatmap](https://beta.observablehq.com/@randomfractals/deck-gl-heatmap)
 and
 [Intro to Using Apache Arrow JS with Large Datasets](https://beta.observablehq.com/@randomfractals/apache-arrow)
@@ -148,13 +148,13 @@ const m2 = {
   variables: [
     {
       name: "groupByField",
-      inputs: ["arrow","toDate"],
-      value: (function(arrow,toDate){return(
+      inputs: ["arrow","toDate","months"],
+      value: (function(arrow,toDate,months){return(
 function groupByField(data, groupField) {
-  let groupData, date, arrested, info, results = {};
+  let groupData, date, location, arrested, info, results = {};
   const dateFilter = arrow.predicate.custom(i => {
     const date = toDate(data.getColumn('Date').get(i));
-    return (date.getMonth() <= 6); // through June
+    return (date.getMonth() <= months.length);
   }, b => 1);
   data.filter(dateFilter)  
   .scan((index) => {
@@ -166,12 +166,14 @@ function groupByField(data, groupField) {
     const dataRecord = {};
     dataRecord[groupField] = groupFieldData;
     dataRecord['date'] = toDate(date(index));
+    dataRecord['location'] = location(index);    
     dataRecord['arrested'] = arrested(index);
     dataRecord['info'] = info(index);
     results[groupFieldData].push(dataRecord);
   }, (batch) => {
     groupData = arrow.predicate.col(groupField).bind(batch);
     date = arrow.predicate.col('Date').bind(batch);
+    location = arrow.predicate.col('LocationDescription').bind(batch);
     arrested = arrow.predicate.col('Arrest').bind(batch);
     info = arrow.predicate.col('Description').bind(batch);
   });
@@ -232,6 +234,12 @@ require('apache-arrow')
       remote: "toDate"
     },
     {
+      name: "months",
+      value: (function(){return(
+['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'August']
+)})
+    },
+    {
       name: "vegalite",
       inputs: ["require"],
       value: (function(require){return(
@@ -242,7 +250,7 @@ require("@observablehq/vega-lite@0.1")
 };
 
 const notebook = {
-  id: "07612a7a7cfd872b@385",
+  id: "07612a7a7cfd872b@386",
   modules: [m0,m1,m2]
 };
 

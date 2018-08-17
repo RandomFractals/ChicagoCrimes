@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/leaflet-pixi-overlay
 // Title: Leaflet Pixi Overlay
 // Author: Taras Novak (@randomfractals)
-// Version: 633
+// Version: 636
 // Runtime version: 1
 
 const m0 = {
-  id: "310a1a019d012db9@633",
+  id: "310a1a019d012db9@636",
   variables: [
     {
       name: "intro",
@@ -13,18 +13,17 @@ const m0 = {
       value: (function(md){return(
 md`# Leaflet Pixi Overlay
 
-This is my sandbox of [leaflet.js](https://leafletjs.com/) / 
+[leaflet.js](https://leafletjs.com/) / 
 [pixi.js](http://www.pixijs.com/) map overaly drawing for the 
 [Chicago Crimes](https://www.linkedin.com/pulse/chicago-crimes-2017-taras-novak/) 
-2018 revisit in JS.
+2018 revisit in JS using [Leaflet.PixiOverlay](https://github.com/manubb/Leaflet.PixiOverlay)
 
-We'll be wiring [Leaflet.PixiOverlay](https://github.com/manubb/Leaflet.PixiOverlay)
-for this sample data map. You might also want to try
+You might also want to try
 [Leaflet.glify plugin](https://github.com/robertleeplummerjr/Leaflet.glify) 
 or straight up webgl to [draw many points on the map](http://bl.ocks.org/Sumbera/c6fed35c377a46ff74c3) 
 or do it with [mapbox-gl.js](https://github.com/mapbox/mapbox-gl-js) 
 
-Fresh 2018 Chicago crimes data loaded below with over 124K recrods for this webgl map notebook combo. See Imports section for the Leaflet, Pixi and PixiOverlay.js setup at the bottom.
+Fresh 2018 Chicago crimes data loaded below with over 156+K recrods for this webgl map notebook combo. See Imports section for the Leaflet, Pixi and PixiOverlay.js setup at the bottom.
 
 Aslo see my [Intro to Using Apache Arrow JS with Large Datasets](https://beta.observablehq.com/@randomfractals/apache-arrow)`
 )})
@@ -177,7 +176,7 @@ new Date('1/1/2018')
     {
       name: "endDate",
       value: (function(){return(
-new Date('6/30/2018')
+new Date('8/8/2018')
 )})
     },
     {
@@ -1232,7 +1231,7 @@ require("d3-format")
 };
 
 const notebook = {
-  id: "310a1a019d012db9@633",
+  id: "310a1a019d012db9@636",
   modules: [m0,m1,m2]
 };
 

@@ -1,22 +1,20 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-ridgeline
 // Title: Chicago Crimes Ridgeline
 // Author: Taras Novak (@randomfractals)
-// Version: 274
+// Version: 276
 // Runtime version: 1
 
 const m0 = {
-  id: "fd086a6ec5412cb1@274",
+  id: "fd086a6ec5412cb1@276",
   variables: [
     {
       inputs: ["md"],
       value: (function(md){return(
 md`# Chicago Crimes Ridgeline
 
-Displays Top 20 reported Chicago crimes ridgeline plot for the 6 months of 2018.
+Displays Top 20 reported Chicago crimes ridgeline plot for 2018.
 
 Ridgeline plots are an alternative to [horizon charts](/@mbostock/d3-horizon-chart) and small-multiple area charts that allow greater precision for a given vertical space at the expense of occlusion (overlapping areas).
-
-TODO: fix this ridgeline display in the eve :)
 `
 )})
     },
@@ -377,7 +375,7 @@ require('apache-arrow')
 };
 
 const notebook = {
-  id: "fd086a6ec5412cb1@274",
+  id: "fd086a6ec5412cb1@276",
   modules: [m0,m1,m2]
 };
 

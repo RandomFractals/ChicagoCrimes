@@ -1,18 +1,18 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-by-type
 // Title: Chicago Crimes by Type
 // Author: Taras Novak (@randomfractals)
-// Version: 354
+// Version: 359
 // Runtime version: 1
 
 const m0 = {
-  id: "647833ad22d939d2@354",
+  id: "647833ad22d939d2@359",
   variables: [
     {
       inputs: ["md"],
       value: (function(md){return(
 md`# Chicago Crimes by Type
 
-Companion notebook for the 180 days in 
+Companion notebook for the
 [2018 Chicago Crimes Heatmap](https://beta.observablehq.com/@randomfractals/deck-gl-heatmap)
 and
 [Intro to Using Apache Arrow JS with Large Datasets](https://beta.observablehq.com/@randomfractals/apache-arrow)
@@ -67,7 +67,7 @@ Object.keys(crimeData)
     {
       name: "months",
       value: (function(){return(
-['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
+['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'August']
 )})
     },
     {
@@ -147,13 +147,13 @@ groupByField(dataTable, 'PrimaryType')
     },
     {
       name: "groupByField",
-      inputs: ["arrow","toDate"],
-      value: (function(arrow,toDate){return(
+      inputs: ["arrow","toDate","months"],
+      value: (function(arrow,toDate,months){return(
 function groupByField(data, groupField) {
   let groupData, date, location, arrested, info, results = {};
   const dateFilter = arrow.predicate.custom(i => {
     const date = toDate(data.getColumn('Date').get(i));
-    return (date.getMonth() <= 6); // through June
+    return (date.getMonth() <= months.length);
   }, b => 1);
   data.filter(dateFilter)  
   .scan((index) => {
@@ -284,7 +284,7 @@ function toDate(timestamp) {
 };
 
 const notebook = {
-  id: "647833ad22d939d2@354",
+  id: "647833ad22d939d2@359",
   modules: [m0,m1]
 };
 

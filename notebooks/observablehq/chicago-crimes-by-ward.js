@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-by-ward
 // Title: Chicago Crimes by Ward Flubber
 // Author: Taras Novak (@randomfractals)
-// Version: 259
+// Version: 260
 // Runtime version: 1
 
 const m0 = {
-  id: "a2d64365818685b3@259",
+  id: "a2d64365818685b3@260",
   variables: [
     {
       inputs: ["md"],
@@ -14,7 +14,7 @@ md`# Chicago Crimes by Ward Flubber
 
 [Flubber](https://github.com/veltman/flubber) is a JavaScript shape animation library.
 
-using 180 days of 2018 Chicago crimes data from: 
+using 2018 Chicago crimes data from: 
 
 https://github.com/RandomFractals/ChicagoCrimes/tree/master/data/2018
 `
@@ -462,7 +462,7 @@ require('apache-arrow')
 };
 
 const notebook = {
-  id: "a2d64365818685b3@259",
+  id: "a2d64365818685b3@260",
   modules: [m0,m1,m2]
 };
 
