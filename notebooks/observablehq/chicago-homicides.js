@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-homicides
 // Title: Chicago Homicides
 // Author: Taras Novak (@randomfractals)
-// Version: 110
+// Version: 114
 // Runtime version: 1
 
 const m0 = {
-  id: "2c207c68a127a60d@110",
+  id: "2c207c68a127a60d@114",
   variables: [
     {
       inputs: ["md"],
@@ -81,7 +81,7 @@ require('d3')
 };
 
 const notebook = {
-  id: "2c207c68a127a60d@110",
+  id: "2c207c68a127a60d@114",
   modules: [m0]
 };
 
