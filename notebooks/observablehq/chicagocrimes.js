@@ -1,0 +1,57 @@
+// URL: https://beta.observablehq.com/@randomfractals/chicagocrimes
+// Title: Chicago Crimes EDA
+// Author: Taras Novak (@randomfractals)
+// Version: 31
+// Runtime version: 1
+
+const m0 = {
+  id: "8db142c9acb93c5b@31",
+  variables: [
+    {
+      inputs: ["md"],
+      value: (function(md){return(
+md`# Chicago Crimes EDA
+
+Exploratory data analysis of 2018 Chicago Crimes with Apache Arrow JS data, various mapping and charting libs.
+
+See similar 2017 Python notebooks data summary at: https://www.linkedin.com/pulse/chicago-crimes-2017-taras-novak/
+
+and live repo for this project at: https://github.com/RandomFractals/ChicagoCrimes
+
+## [2018 Chicago Crimes Notebooks](https://beta.observablehq.com/search?query=Chicago%20Crimes)
+
+[Chicago Crimes Leaflet Pixi Overlay](https://beta.observablehq.com/@randomfractals/leaflet-pixi-overlay)
+
+[Chicago Crimes Deck.GL Heatmap](https://beta.observablehq.com/@randomfractals/deck-gl-heatmap)
+
+[Chicago Crimes by Type](https://beta.observablehq.com/@randomfractals/chicago-crimes-by-type)
+
+[Chicago Crimes in Perspective](https://beta.observablehq.com/@randomfractals/chicago-crimes-in-perspective)
+
+[Chicago Crimes Ward Flubber](https://beta.observablehq.com/@randomfractals/chicago-crimes-by-ward)
+
+[Chicago Crimes by Location](https://beta.observablehq.com/@randomfractals/chicago-crimes-by-location)
+
+[Chicago Crimes Sunburst](https://beta.observablehq.com/@randomfractals/chicago-crimes-sunburst)
+
+[Chicago Crimes Sankey](https://beta.observablehq.com/@randomfractals/chicago-crimes-sankey)
+
+[Chicago Crimes by Day](https://beta.observablehq.com/@randomfractals/chicago-crimes-by-day)
+
+[Chicago Crimes Hypergrid](https://beta.observablehq.com/@randomfractals/apache-arrow-hypergrid)
+
+[Chicago Crimes Ridgeline](https://beta.observablehq.com/@randomfractals/chicago-crimes-ridgeline)
+
+[Chicago Crimes Hexgrid Map](https://beta.observablehq.com/@randomfractals/chicago-crimes-hexgrid)
+`
+)})
+    }
+  ]
+};
+
+const notebook = {
+  id: "8db142c9acb93c5b@31",
+  modules: [m0]
+};
+
+export default notebook;
