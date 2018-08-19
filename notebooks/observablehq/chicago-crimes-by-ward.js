@@ -1,20 +1,20 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-by-ward
 // Title: Chicago Crimes by Ward Flubber
 // Author: Taras Novak (@randomfractals)
-// Version: 260
+// Version: 269
 // Runtime version: 1
 
 const m0 = {
-  id: "a2d64365818685b3@260",
+  id: "a2d64365818685b3@269",
   variables: [
     {
       inputs: ["md"],
       value: (function(md){return(
 md`# Chicago Crimes by Ward Flubber
 
-[Flubber](https://github.com/veltman/flubber) is a JavaScript shape animation library.
+Chicago city is divided into 50 wards for the legislative branch: https://en.wikipedia.org/wiki/Chicago_City_Council
 
-using 2018 Chicago crimes data from: 
+This notebook display 2018 Chicago crimes by ward with animated transitions from cartogram, to map, to bar chart using d3 and [Flubber](https://github.com/veltman/flubber) JavaScript shape animation library and Apache Arrow crime data from: 
 
 https://github.com/RandomFractals/ChicagoCrimes/tree/master/data/2018
 `
@@ -413,13 +413,13 @@ const m2 = {
   variables: [
     {
       name: "groupByField",
-      inputs: ["arrow","toDate"],
-      value: (function(arrow,toDate){return(
+      inputs: ["arrow","toDate","months"],
+      value: (function(arrow,toDate,months){return(
 function groupByField(data, groupField) {
   let groupData, date, location, arrested, info, results = {};
   const dateFilter = arrow.predicate.custom(i => {
     const date = toDate(data.getColumn('Date').get(i));
-    return (date.getMonth() <= 6); // through June
+    return (date.getMonth() <= months.length);
   }, b => 1);
   data.filter(dateFilter)  
   .scan((index) => {
@@ -457,12 +457,18 @@ require('apache-arrow')
       from: "@randomfractals/apache-arrow",
       name: "toDate",
       remote: "toDate"
+    },
+    {
+      name: "months",
+      value: (function(){return(
+['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'August']
+)})
     }
   ]
 };
 
 const notebook = {
-  id: "a2d64365818685b3@260",
+  id: "a2d64365818685b3@269",
   modules: [m0,m1,m2]
 };
 
