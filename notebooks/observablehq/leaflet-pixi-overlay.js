@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/leaflet-pixi-overlay
 // Title: Leaflet Pixi Overlay
 // Author: Taras Novak (@randomfractals)
-// Version: 636
+// Version: 638
 // Runtime version: 1
 
 const m0 = {
-  id: "310a1a019d012db9@636",
+  id: "310a1a019d012db9@638",
   variables: [
     {
       name: "intro",
@@ -68,16 +68,16 @@ md`## Arrow Data Sample`
 )})
     },
     {
-      name: "every10KRecord",
+      name: "every20KRecord",
       inputs: ["range","data"],
       value: (function(range,data){return(
-range(data, 0, data.count(), 10000)
+range(data, 0, data.count(), 20000)
 )})
     },
     {
-      inputs: ["md","getMarkdown","every10KRecord","fields"],
-      value: (function(md,getMarkdown,every10KRecord,fields){return(
-md`${getMarkdown(every10KRecord, fields)}`
+      inputs: ["md","getMarkdown","every20KRecord","fields"],
+      value: (function(md,getMarkdown,every20KRecord,fields){return(
+md`${getMarkdown(every20KRecord, fields)}`
 )})
     },
     {
@@ -1158,21 +1158,42 @@ function slider(config = {}) {
       inputs: ["input","html"],
       value: (function(input,html){return(
 function select(config = {}) {
-  let {value: formValue, title, description, submit, multiple, size, options} = config;
+  let {
+    value: formValue,
+    title,
+    description,
+    submit,
+    multiple,
+    size,
+    options
+  } = config;
   if (Array.isArray(config)) options = config;
-  options = options.map(o => typeof o === "string" ? {value: o, label: o} : o);
+  options = options.map(
+    o => (typeof o === "object" ? o : { value: o, label: o })
+  );
   const form = input({
-    type: "select", title, description, submit, 
+    type: "select",
+    title,
+    description,
+    submit,
     getValue: input => {
-      const selected = Array.prototype.filter.call(input.options, i => i.selected).map(i => i.value);
+      const selected = Array.prototype.filter
+        .call(input.options, i => i.selected)
+        .map(i => i.value);
       return multiple ? selected : selected[0];
     },
     form: html`
       <form>
-        <select name="input" ${multiple ? `multiple size="${size || options.length}"` : ""}>
-          ${options.map(({value, label}) => `
-            <option value="${value}" ${value === formValue ? "selected" : ""}>${label}</option>
-          `)}
+        <select name="input" ${
+          multiple ? `multiple size="${size || options.length}"` : ""
+        }>
+          ${options.map(
+            ({ value, label }) => `
+            <option value="${value}" ${
+              value === formValue ? "selected" : ""
+            }>${label}</option>
+          `
+          )}
         </select>
       </form>
     `
@@ -1231,7 +1252,7 @@ require("d3-format")
 };
 
 const notebook = {
-  id: "310a1a019d012db9@636",
+  id: "310a1a019d012db9@638",
   modules: [m0,m1,m2]
 };
 
