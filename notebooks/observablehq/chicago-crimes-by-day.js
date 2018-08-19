@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-by-day
 // Title: Chicago Crimes by Day
 // Author: Taras Novak (@randomfractals)
-// Version: 426
+// Version: 447
 // Runtime version: 1
 
 const m0 = {
-  id: "e901da8a28f3f554@426",
+  id: "e901da8a28f3f554@447",
   variables: [
     {
       inputs: ["md"],
@@ -35,9 +35,13 @@ select(['', 'HOMICIDE', 'KIDNAPPING', 'NARCOTICS', 'PROSTITUTION', 'ARSON',
       value: (G, _) => G.input(_)
     },
     {
-      inputs: ["md"],
-      value: (function(md){return(
-md `*mouseover to see the number of reported crimes per day*`
+      inputs: ["md","crimeType","dailyCounts"],
+      value: (function(md,crimeType,dailyCounts){return(
+md `##### 2018 ${crimeType} Total: ${Object.keys(dailyCounts)
+  .map(key => dailyCounts[key].value)
+  .reduce((total, num) => total + num)
+  .toLocaleString()}
+`
 )})
     },
     {
@@ -108,6 +112,12 @@ md `*mouseover to see the number of reported crimes per day*`
   return svg.node();
 }
 )
+    },
+    {
+      inputs: ["md"],
+      value: (function(md){return(
+md `*mouseover to see the number of reported crimes per day*`
+)})
     },
     {
       name: "viewof weekday",
@@ -442,7 +452,7 @@ require("d3-format")
 };
 
 const notebook = {
-  id: "e901da8a28f3f554@426",
+  id: "e901da8a28f3f554@447",
   modules: [m0,m1,m2]
 };
 
