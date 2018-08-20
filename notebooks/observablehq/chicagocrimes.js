@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicagocrimes
 // Title: Chicago Crimes EDA
 // Author: Taras Novak (@randomfractals)
-// Version: 43
+// Version: 53
 // Runtime version: 1
 
 const m0 = {
-  id: "8db142c9acb93c5b@43",
+  id: "8db142c9acb93c5b@53",
   variables: [
     {
       inputs: ["md"],
@@ -62,8 +62,34 @@ md `
 [Chicago Crimes Ridgeline](https://beta.observablehq.com/@randomfractals/chicago-crimes-ridgeline)
 
 [Chicago Crimes Hexgrid Map](https://beta.observablehq.com/@randomfractals/chicago-crimes-hexgrid)
+`
+)})
+    },
+    {
+      inputs: ["md"],
+      value: (function(md){return(
+md `## [Chicago Homicides, 2001-2018, Notebooks](https://beta.observablehq.com/search?query=Chicago%20Homicides)`
+)})
+    },
+    {
+      inputs: ["html"],
+      value: (function(html){return(
+html `<a href="https://beta.observablehq.com/search?query=Chicago%20Homicides">
+  <img src="https://raw.githubusercontent.com/RandomFractals/ChicagoCrimes/master/notebooks/observablehq/chicago-homicides-observablehq.png" alt="Search Chicago Homicides" />
+</a>
+`
+)})
+    },
+    {
+      inputs: ["md"],
+      value: (function(md){return(
+md `
 
-[Chicago Homicides by Day, 2001-2018](https://beta.observablehq.com/@randomfractals/chicago-homicides-by-day)
+[Chicago Homicides Data Starter Kit](https://beta.observablehq.com/@randomfractals/chicago-homicides)
+
+[Chicago Homicides by Day](https://beta.observablehq.com/@randomfractals/chicago-homicides-by-day)
+
+[Chicago Homicides by Ward](https://beta.observablehq.com/@randomfractals/chicago-homicides-by-ward)
 `
 )})
     }
@@ -71,7 +97,7 @@ md `
 };
 
 const notebook = {
-  id: "8db142c9acb93c5b@43",
+  id: "8db142c9acb93c5b@53",
   modules: [m0]
 };
 
