@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicagocrimes
 // Title: Chicago Crimes EDA
 // Author: Taras Novak (@randomfractals)
-// Version: 42
+// Version: 43
 // Runtime version: 1
 
 const m0 = {
-  id: "8db142c9acb93c5b@42",
+  id: "8db142c9acb93c5b@43",
   variables: [
     {
       inputs: ["md"],
@@ -62,6 +62,8 @@ md `
 [Chicago Crimes Ridgeline](https://beta.observablehq.com/@randomfractals/chicago-crimes-ridgeline)
 
 [Chicago Crimes Hexgrid Map](https://beta.observablehq.com/@randomfractals/chicago-crimes-hexgrid)
+
+[Chicago Homicides by Day, 2001-2018](https://beta.observablehq.com/@randomfractals/chicago-homicides-by-day)
 `
 )})
     }
@@ -69,7 +71,7 @@ md `
 };
 
 const notebook = {
-  id: "8db142c9acb93c5b@42",
+  id: "8db142c9acb93c5b@43",
   modules: [m0]
 };
 
