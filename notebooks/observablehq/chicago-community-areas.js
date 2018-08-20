@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-community-areas
 // Title: Chicago Community Areas
 // Author: Taras Novak (@randomfractals)
-// Version: 54
+// Version: 68
 // Runtime version: 1
 
 const m0 = {
-  id: "fe14c39662a972fa@54",
+  id: "fe14c39662a972fa@68",
   variables: [
     {
       inputs: ["md"],
@@ -69,20 +69,33 @@ html`
     {
       inputs: ["md"],
       value: (function(md){return(
-md `## Chicago Communities Geo Data`
+md `## Chicago Communities Data`
 )})
     },
     {
-      name: "geoJsonUrl",
+      name: "communityGeoJsonUrl",
       value: (function(){return(
 'https://raw.githubusercontent.com/RandomFractals/ChicagoCrimes/master/data/chicago-community-areas.geojson'
 )})
     },
     {
+      name: "communityDataUrl",
+      value: (function(){return(
+'https://raw.githubusercontent.com/RandomFractals/ChicagoCrimes/master/data/chicago-community-areas.csv'
+)})
+    },
+    {
       name: "geoData",
-      inputs: ["d3","geoJsonUrl"],
-      value: (function(d3,geoJsonUrl){return(
-d3.json(geoJsonUrl)
+      inputs: ["d3","communityGeoJsonUrl"],
+      value: (function(d3,communityGeoJsonUrl){return(
+d3.json(communityGeoJsonUrl)
+)})
+    },
+    {
+      name: "communityData",
+      inputs: ["d3","communityDataUrl"],
+      value: (function(d3,communityDataUrl){return(
+d3.csv(communityDataUrl)
 )})
     },
     {
@@ -103,7 +116,7 @@ require('d3')
 };
 
 const notebook = {
-  id: "fe14c39662a972fa@54",
+  id: "fe14c39662a972fa@68",
   modules: [m0]
 };
 
