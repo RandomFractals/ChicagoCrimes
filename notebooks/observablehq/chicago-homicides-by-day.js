@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-homicides-by-day
 // Title: Chicago Homicides by Day
 // Author: Taras Novak (@randomfractals)
-// Version: 469
+// Version: 479
 // Runtime version: 1
 
 const m0 = {
-  id: "f60ca0b9bbff0629@469",
+  id: "f60ca0b9bbff0629@479",
   variables: [
     {
       inputs: ["md"],
@@ -16,7 +16,7 @@ md `# Chicago Homicides by Day`
     {
       inputs: ["md","dailyCounts"],
       value: (function(md,dailyCounts){return(
-md `##### Total Homicides since 2004: ${Object.keys(dailyCounts)
+md `##### Total Homicides since 2001: ${Object.keys(dailyCounts)
   .map(key => dailyCounts[key].value)
   .reduce((total, num) => total + num)
   .toLocaleString()}
@@ -164,7 +164,7 @@ function pathMonth(t) {
       name: "formatDate",
       inputs: ["d3"],
       value: (function(d3){return(
-d3.timeFormat('%A, %B %e')
+d3.timeFormat('%A, %B %e, %Y')
 )})
     },
     {
@@ -204,7 +204,7 @@ require("https://d3js.org/d3.v5.min.js")
     {
       inputs: ["md"],
       value: (function(md){return(
-md `## Crime Data`
+md `## Homicides Data`
 )})
     },
     {
@@ -233,8 +233,9 @@ groupByDay(homicides)
       value: (function(dailyData){return(
 Object.keys(dailyData)
   .map(day => {
-    return {date: new Date(new Date(day).getTime()), value: dailyData[day].length};
-  })
+    const date = new Date(day);
+    return {date: new Date(date.getTime() + date.getTimezoneOffset() * 60 * 1000), value: dailyData[day].length};
+  }).sort((a, b) => a.date - b.date)
 )})
     },
     {
@@ -259,7 +260,7 @@ function groupByDay(dataArray) {
 };
 
 const notebook = {
-  id: "f60ca0b9bbff0629@469",
+  id: "f60ca0b9bbff0629@479",
   modules: [m0]
 };
 
