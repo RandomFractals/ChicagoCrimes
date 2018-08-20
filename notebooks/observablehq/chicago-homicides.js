@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-homicides
 // Title: Chicago Homicides
 // Author: Taras Novak (@randomfractals)
-// Version: 114
+// Version: 115
 // Runtime version: 1
 
 const m0 = {
-  id: "2c207c68a127a60d@114",
+  id: "2c207c68a127a60d@115",
   variables: [
     {
       inputs: ["md"],
@@ -29,7 +29,9 @@ Get creative! Some inspirational dataViz notebooks parsing this dataset:
     {
       inputs: ["md"],
       value: (function(md){return(
-md `## Homicides Data`
+md `## Homicides Data
+
+Data Source: [Chicago Data Portal/Public Safety/Crimes 2001 to present](https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2)`
 )})
     },
     {
@@ -81,7 +83,7 @@ require('d3')
 };
 
 const notebook = {
-  id: "2c207c68a127a60d@114",
+  id: "2c207c68a127a60d@115",
   modules: [m0]
 };
 

@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-homicides-by-day
 // Title: Chicago Homicides by Day, 2001-2018
 // Author: Taras Novak (@randomfractals)
-// Version: 483
+// Version: 484
 // Runtime version: 1
 
 const m0 = {
-  id: "f60ca0b9bbff0629@483",
+  id: "f60ca0b9bbff0629@484",
   variables: [
     {
       inputs: ["md"],
@@ -204,7 +204,9 @@ require("https://d3js.org/d3.v5.min.js")
     {
       inputs: ["md"],
       value: (function(md){return(
-md `## Homicides Data`
+md `## Homicides Data
+
+Data Source: [Chicago Data Portal/Public Safety/Crimes 2001 to present](https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2)`
 )})
     },
     {
@@ -260,7 +262,7 @@ function groupByDay(dataArray) {
 };
 
 const notebook = {
-  id: "f60ca0b9bbff0629@483",
+  id: "f60ca0b9bbff0629@484",
   modules: [m0]
 };
 

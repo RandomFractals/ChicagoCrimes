@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicagocrimes
 // Title: Chicago Crimes EDA
 // Author: Taras Novak (@randomfractals)
-// Version: 53
+// Version: 57
 // Runtime version: 1
 
 const m0 = {
-  id: "8db142c9acb93c5b@53",
+  id: "8db142c9acb93c5b@57",
   variables: [
     {
       inputs: ["md"],
@@ -17,6 +17,8 @@ Exploratory data analysis of 2018 Chicago Crimes with Apache Arrow JS data, vari
 See similar 2017 Python notebooks data summary at: https://www.linkedin.com/pulse/chicago-crimes-2017-taras-novak/
 
 and live repo for this project at: https://github.com/RandomFractals/ChicagoCrimes
+
+Data Source: [Chicago Data Portal/Public Safety/Crimes 2001 to present](https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2)
 `
 )})
     },
@@ -97,7 +99,7 @@ md `
 };
 
 const notebook = {
-  id: "8db142c9acb93c5b@53",
+  id: "8db142c9acb93c5b@57",
   modules: [m0]
 };
 

@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-homicides-by-ward
 // Title: Chicago Homicides by Ward, 2001-2018
 // Author: Taras Novak (@randomfractals)
-// Version: 291
+// Version: 292
 // Runtime version: 1
 
 const m0 = {
-  id: "b580ecf7938e1422@291",
+  id: "b580ecf7938e1422@292",
   variables: [
     {
       inputs: ["md"],
@@ -250,7 +250,9 @@ require("https://d3js.org/d3.v5.min.js")
     {
       inputs: ["md"],
       value: (function(md){return(
-md `## Homicides Data`
+md `## Homicides Data
+
+Data Source: [Chicago Data Portal/Public Safety/Crimes 2001 to present](https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2)`
 )})
     },
     {
@@ -310,7 +312,7 @@ md `## Intro to Cartograms
 };
 
 const notebook = {
-  id: "b580ecf7938e1422@291",
+  id: "b580ecf7938e1422@292",
   modules: [m0]
 };
 
