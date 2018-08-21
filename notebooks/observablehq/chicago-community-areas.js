@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-community-areas
 // Title: Chicago Community Areas
 // Author: Taras Novak (@randomfractals)
-// Version: 113
+// Version: 136
 // Runtime version: 1
 
 const m0 = {
-  id: "fe14c39662a972fa@113",
+  id: "fe14c39662a972fa@136",
   variables: [
     {
       inputs: ["md"],
@@ -42,13 +42,11 @@ require("vega-embed@3")
       inputs: ["embed","width","layers"],
       value: (function(embed,width,layers){return(
 embed({
-  "width": width,
-  "height": width * .6,
-  "layer": layers,
-  "config": {
-    "view": {
-      "stroke": "transparent"
-    },
+  width: width,
+  height: width * .6,
+  layer: layers,
+  config: {
+    view: {stroke: 'transparent'}
   }
 })
 )})
@@ -59,10 +57,47 @@ embed({
       value: (G, _) => G.input(_)
     },
     {
+      inputs: ["map"],
+      value: (function(map){return(
+map.renderer('svg').run()
+)})
+    },
+    {
       name: "layers",
-      value: (function()
-{}
-)
+      inputs: ["topoJsonUrl","outlineColor"],
+      value: (function(topoJsonUrl,outlineColor){return(
+[{
+  data: {
+    url: topoJsonUrl,
+    format: {
+      type: 'topojson',
+      feature: 'chicago-community-areas'
+    },
+  },
+  projection: {
+    type: 'mercator',
+  },
+  mark: 'geoshape',
+  encoding: {
+    stroke: {value: outlineColor},
+    fill: {value: '#ccc'}, // colors[i % colors.length]},
+    // "fill": {
+    //   "field": "properties.AWATER",
+    //   "type": "quantitative"
+    // },
+    tooltip: [
+      {field: 'properties.community', type: 'nominal', title: 'Community'},
+    ],
+  },
+}]
+)})
+    },
+    {
+      name: "colors",
+      inputs: ["d3"],
+      value: (function(d3){return(
+d3[`scheme${'Pastel1'}`]
+)})
     },
     {
       name: "outlineColor",
@@ -91,13 +126,19 @@ md `## Chicago Communities Data`
 )})
     },
     {
+      name: "topoJsonUrl",
+      value: (function(){return(
+'https://raw.githubusercontent.com/RandomFractals/ChicagoCrimes/master/data/chicago-community-areas.topojson'
+)})
+    },
+    {
       name: "geoJsonUrl",
       value: (function(){return(
 'https://raw.githubusercontent.com/RandomFractals/ChicagoCrimes/master/data/chicago-community-areas.geojson'
 )})
     },
     {
-      name: "infoUrl",
+      name: "dataUrl",
       value: (function(){return(
 'https://raw.githubusercontent.com/RandomFractals/ChicagoCrimes/master/data/chicago-community-areas.csv'
 )})
@@ -118,9 +159,9 @@ d3.json(geoJsonUrl)
     },
     {
       name: "communityData",
-      inputs: ["d3","infoUrl"],
-      value: (function(d3,infoUrl){return(
-d3.csv(infoUrl)
+      inputs: ["d3","dataUrl"],
+      value: (function(d3,dataUrl){return(
+d3.csv(dataUrl)
 )})
     },
     {
@@ -178,7 +219,7 @@ function addCommunityInfo(geoData, communities) {
 };
 
 const notebook = {
-  id: "fe14c39662a972fa@113",
+  id: "fe14c39662a972fa@136",
   modules: [m0]
 };
 
