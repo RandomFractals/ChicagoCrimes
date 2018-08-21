@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-community-areas
 // Title: Chicago Community Areas
 // Author: Taras Novak (@randomfractals)
-// Version: 68
+// Version: 113
 // Runtime version: 1
 
 const m0 = {
-  id: "fe14c39662a972fa@68",
+  id: "fe14c39662a972fa@113",
   variables: [
     {
       inputs: ["md"],
@@ -15,14 +15,19 @@ md`# Chicago Community Areas
 Chicago is divided into 77 community areas and 9 sides as defined by the Social Science Research Committee at the University of Chicago back in 2012:
 
 https://en.wikipedia.org/wiki/Community_areas_in_Chicago
-
-We'll map it next with [#Vega Lite Embed Geo Projection](https://beta.observablehq.com/search?query=vega%20lite%20embed%20geo%20projection)`
+`
 )})
     },
     {
       inputs: ["html"],
       value: (function(html){return(
 html `<img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Map_of_the_Community_Areas_and_%27Sides%27_of_the_City_of_Chicago.svg"></img>`
+)})
+    },
+    {
+      inputs: ["md"],
+      value: (function(md){return(
+md `## Mapping Chicago Communites with [Vega Lite Embed Geo Projection](https://vega.github.io/vega-lite/docs/projection.html)`
 )})
     },
     {
@@ -33,18 +38,31 @@ require("vega-embed@3")
 )})
     },
     {
-      name: "mapWidth",
-      inputs: ["width"],
-      value: (function(width){return(
-width
+      name: "viewof map",
+      inputs: ["embed","width","layers"],
+      value: (function(embed,width,layers){return(
+embed({
+  "width": width,
+  "height": width * .6,
+  "layer": layers,
+  "config": {
+    "view": {
+      "stroke": "transparent"
+    },
+  }
+})
 )})
     },
     {
-      name: "mapHeight",
-      inputs: ["mapWidth"],
-      value: (function(mapWidth){return(
-mapWidth*.6
-)})
+      name: "map",
+      inputs: ["Generators","viewof map"],
+      value: (G, _) => G.input(_)
+    },
+    {
+      name: "layers",
+      value: (function()
+{}
+)
     },
     {
       name: "outlineColor",
@@ -73,36 +91,15 @@ md `## Chicago Communities Data`
 )})
     },
     {
-      name: "communityGeoJsonUrl",
+      name: "geoJsonUrl",
       value: (function(){return(
 'https://raw.githubusercontent.com/RandomFractals/ChicagoCrimes/master/data/chicago-community-areas.geojson'
 )})
     },
     {
-      name: "communityDataUrl",
+      name: "infoUrl",
       value: (function(){return(
 'https://raw.githubusercontent.com/RandomFractals/ChicagoCrimes/master/data/chicago-community-areas.csv'
-)})
-    },
-    {
-      name: "geoData",
-      inputs: ["d3","communityGeoJsonUrl"],
-      value: (function(d3,communityGeoJsonUrl){return(
-d3.json(communityGeoJsonUrl)
-)})
-    },
-    {
-      name: "communityData",
-      inputs: ["d3","communityDataUrl"],
-      value: (function(d3,communityDataUrl){return(
-d3.csv(communityDataUrl)
-)})
-    },
-    {
-      name: "communities",
-      inputs: ["geoData"],
-      value: (function(geoData){return(
-geoData.features.map(area => area.properties.community)
 )})
     },
     {
@@ -111,12 +108,77 @@ geoData.features.map(area => area.properties.community)
       value: (function(require){return(
 require('d3')
 )})
+    },
+    {
+      name: "geoData",
+      inputs: ["d3","geoJsonUrl"],
+      value: (function(d3,geoJsonUrl){return(
+d3.json(geoJsonUrl)
+)})
+    },
+    {
+      name: "communityData",
+      inputs: ["d3","infoUrl"],
+      value: (function(d3,infoUrl){return(
+d3.csv(infoUrl)
+)})
+    },
+    {
+      name: "sides",
+      inputs: ["communityData"],
+      value: (function(communityData)
+{
+  // group communities by side
+  const sides = {}
+  communityData.slice(1) // skip 1st null row
+    .map(community => {
+      if (!sides[community.Side]) {
+        sides[community.Side] = [];
+      }
+      sides[community.Side].push(community);
+    });
+  return sides;
+}
+)
+    },
+    {
+      name: "communities",
+      inputs: ["communityData"],
+      value: (function(communityData)
+{
+  // create communities info map
+  const communities = {}
+  communityData.slice(1) // skip 1st null row
+    .map(community => communities[community.CommunityName.toLowerCase()] = community);       
+  return communities;
+}
+)
+    },
+    {
+      name: "features",
+      inputs: ["addCommunityInfo","geoData","communities"],
+      value: (function(addCommunityInfo,geoData,communities){return(
+addCommunityInfo(geoData, communities)
+)})
+    },
+    {
+      name: "addCommunityInfo",
+      value: (function(){return(
+function addCommunityInfo(geoData, communities) {
+  geoData.features.map(feature => {
+    // replace community name with community info
+    const communityName = feature.properties.community.toLowerCase();
+    feature.properties.community = communities[communityName];
+  });
+  return geoData.features;
+}
+)})
     }
   ]
 };
 
 const notebook = {
-  id: "fe14c39662a972fa@68",
+  id: "fe14c39662a972fa@113",
   modules: [m0]
 };
 
