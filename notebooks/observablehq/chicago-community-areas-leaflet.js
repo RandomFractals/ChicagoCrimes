@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-community-areas-leaflet
 // Title: Chicago Community Areas Leaflet
 // Author: Taras Novak (@randomfractals)
-// Version: 163
+// Version: 167
 // Runtime version: 1
 
 const m0 = {
-  id: "96785811993b45f6@163",
+  id: "96785811993b45f6@167",
   variables: [
     {
       inputs: ["md"],
@@ -32,15 +32,20 @@ md `## Mapping Chicago Communites with [LeafletJS](https://leafletjs.com/)`
     },
     {
       name: "map",
-      inputs: ["DOM","width","createMap"],
-      value: (function*(DOM,width,createMap)
+      inputs: ["DOM","width","createMap","L","geoData"],
+      value: (function*(DOM,width,createMap,L,geoData)
 {
   // create map container and leaflet map
   const mapContainer = DOM.element('div', {style: `width:${width}px;height:${width/1.6}px`});
   yield mapContainer;
   const map = createMap(mapContainer);
   
-  // todo: add community areas and sides polygons and coloring
+  let communitiesLayer = L.geoJson(geoData, {
+    weight: 1,
+    color: '#432'
+  }).addTo(map);
+
+  // todo: add community area tooltip and color by sides
 }
 )
     },
@@ -91,12 +96,6 @@ function createMap(mapContainer) {
       inputs: ["md"],
       value: (function(md){return(
 md `## Chicago Communities Data`
-)})
-    },
-    {
-      name: "topoJsonUrl",
-      value: (function(){return(
-'https://raw.githubusercontent.com/RandomFractals/ChicagoCrimes/master/data/chicago-community-areas.topojson'
 )})
     },
     {
@@ -187,7 +186,7 @@ function addCommunityInfo(geoData, communities) {
 };
 
 const notebook = {
-  id: "96785811993b45f6@163",
+  id: "96785811993b45f6@167",
   modules: [m0]
 };
 
