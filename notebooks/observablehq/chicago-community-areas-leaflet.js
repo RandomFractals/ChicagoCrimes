@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-community-areas-leaflet
 // Title: Chicago Community Areas Leaflet
 // Author: Taras Novak (@randomfractals)
-// Version: 167
+// Version: 228
 // Runtime version: 1
 
 const m0 = {
-  id: "96785811993b45f6@167",
+  id: "96785811993b45f6@228",
   variables: [
     {
       inputs: ["md"],
@@ -32,20 +32,24 @@ md `## Mapping Chicago Communites with [LeafletJS](https://leafletjs.com/)`
     },
     {
       name: "map",
-      inputs: ["DOM","width","createMap","L","geoData"],
-      value: (function*(DOM,width,createMap,L,geoData)
+      inputs: ["DOM","width","createMap","L","geoData","toHtml"],
+      value: (function*(DOM,width,createMap,L,geoData,toHtml)
 {
   // create map container and leaflet map
   const mapContainer = DOM.element('div', {style: `width:${width}px;height:${width/1.6}px`});
   yield mapContainer;
   const map = createMap(mapContainer);
-  
   let communitiesLayer = L.geoJson(geoData, {
-    weight: 1,
-    color: '#432'
+    weight: 3,
+    color: '#000',
+    onEachFeature: function (feature, layer) {
+      const html = `<div class="popup"><h4>${toHtml(feature.properties.community)}</h2></div>`;
+      layer.bindPopup(html);
+      layer.bindTooltip(html, {sticky: true});
+    }
   }).addTo(map);
 
-  // todo: add community area tooltip and color by sides
+  // todo: refine community area tooltip and color by sides
 }
 )
     },
@@ -181,12 +185,20 @@ function addCommunityInfo(geoData, communities) {
   return geoData.features;
 }
 )})
+    },
+    {
+      name: "toHtml",
+      value: (function(){return(
+function toHtml(community) {
+ return JSON.stringify(community, null, '<br />');
+}
+)})
     }
   ]
 };
 
 const notebook = {
-  id: "96785811993b45f6@167",
+  id: "96785811993b45f6@228",
   modules: [m0]
 };
 
