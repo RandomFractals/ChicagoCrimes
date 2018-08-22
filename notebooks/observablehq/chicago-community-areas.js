@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-community-areas
 // Title: Chicago Community Areas
 // Author: Taras Novak (@randomfractals)
-// Version: 136
+// Version: 141
 // Runtime version: 1
 
 const m0 = {
-  id: "fe14c39662a972fa@136",
+  id: "fe14c39662a972fa@141",
   variables: [
     {
       inputs: ["md"],
@@ -64,8 +64,8 @@ map.renderer('svg').run()
     },
     {
       name: "layers",
-      inputs: ["topoJsonUrl","outlineColor"],
-      value: (function(topoJsonUrl,outlineColor){return(
+      inputs: ["topoJsonUrl"],
+      value: (function(topoJsonUrl){return(
 [{
   data: {
     url: topoJsonUrl,
@@ -79,12 +79,8 @@ map.renderer('svg').run()
   },
   mark: 'geoshape',
   encoding: {
-    stroke: {value: outlineColor},
-    fill: {value: '#ccc'}, // colors[i % colors.length]},
-    // "fill": {
-    //   "field": "properties.AWATER",
-    //   "type": "quantitative"
-    // },
+    stroke: {value: '#333'},
+    fill: {value: '#ccc'},
     tooltip: [
       {field: 'properties.community', type: 'nominal', title: 'Community'},
     ],
@@ -93,16 +89,10 @@ map.renderer('svg').run()
 )})
     },
     {
-      name: "colors",
+      name: "sideColors",
       inputs: ["d3"],
       value: (function(d3){return(
 d3[`scheme${'Pastel1'}`]
-)})
-    },
-    {
-      name: "outlineColor",
-      value: (function(){return(
-'#333'
 )})
     },
     {
@@ -219,7 +209,7 @@ function addCommunityInfo(geoData, communities) {
 };
 
 const notebook = {
-  id: "fe14c39662a972fa@136",
+  id: "fe14c39662a972fa@141",
   modules: [m0]
 };
 
