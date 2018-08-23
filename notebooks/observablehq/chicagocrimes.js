@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicagocrimes
 // Title: Chicago Crimes EDA
 // Author: Taras Novak (@randomfractals)
-// Version: 58
+// Version: 61
 // Runtime version: 1
 
 const m0 = {
-  id: "8db142c9acb93c5b@58",
+  id: "8db142c9acb93c5b@61",
   variables: [
     {
       inputs: ["md"],
@@ -76,10 +76,11 @@ md `## [Chicago Homicides, 2001-2018, Notebooks](https://beta.observablehq.com/s
 )})
     },
     {
+      name: "homicides",
       inputs: ["html"],
       value: (function(html){return(
 html `<a href="https://beta.observablehq.com/search?query=Chicago%20Homicides">
-  <img src="https://raw.githubusercontent.com/RandomFractals/ChicagoCrimes/master/notebooks/observablehq/chicago-homicides-observablehq.png" alt="Search Chicago Homicides" />
+  <img src="https://raw.githubusercontent.com/RandomFractals/ChicagoCrimes/master/notebooks/observablehq/chicago-homicides-notebooks-2.png" alt="Search Chicago Homicides" />
 </a>
 `
 )})
@@ -94,6 +95,10 @@ md `
 [Chicago Homicides by Day](https://beta.observablehq.com/@randomfractals/chicago-homicides-by-day)
 
 [Chicago Homicides by Ward](https://beta.observablehq.com/@randomfractals/chicago-homicides-by-ward)
+
+[Chicago Homicides by Community](https://beta.observablehq.com/@randomfractals/chicago-homicides-by-community-area-leaflet)
+
+[Chicago Homicides Leaflet Map](https://beta.observablehq.com/@randomfractals/chicago-homicides-heatmap)
 `
 )})
     }
@@ -101,7 +106,7 @@ md `
 };
 
 const notebook = {
-  id: "8db142c9acb93c5b@58",
+  id: "8db142c9acb93c5b@61",
   modules: [m0]
 };
 
