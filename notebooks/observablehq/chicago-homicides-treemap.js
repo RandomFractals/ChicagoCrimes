@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-homicides-treemap
 // Title: Chicago Homicides Treemap
 // Author: Taras Novak (@randomfractals)
-// Version: 225
+// Version: 226
 // Runtime version: 1
 
 const m0 = {
-  id: "540643c8c4924ccd@225",
+  id: "540643c8c4924ccd@226",
   variables: [
     {
       inputs: ["md"],
@@ -135,9 +135,6 @@ d3.format(",d")
 )})
     },
     {
-
-    },
-    {
       inputs: ["md"],
       value: (function(md){return(
 md `## Chicago Sides/Communities Data`
@@ -237,7 +234,7 @@ require("https://d3js.org/d3.v5.min.js")
 };
 
 const notebook = {
-  id: "540643c8c4924ccd@225",
+  id: "540643c8c4924ccd@226",
   modules: [m0]
 };
 

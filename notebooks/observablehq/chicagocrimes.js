@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicagocrimes
 // Title: Chicago Crimes EDA
 // Author: Taras Novak (@randomfractals)
-// Version: 63
+// Version: 64
 // Runtime version: 1
 
 const m0 = {
-  id: "8db142c9acb93c5b@63",
+  id: "8db142c9acb93c5b@64",
   variables: [
     {
       inputs: ["md"],
@@ -101,6 +101,8 @@ md `
 [Chicago Homicides Leaflet Map](https://beta.observablehq.com/@randomfractals/chicago-homicides-heatmap)
 
 [Chicago Homicides Treemap](https://beta.observablehq.com/@randomfractals/chicago-homicides-treemap)
+
+[Chicago Homicides Sunburst](https://beta.observablehq.com/@randomfractals/chicago-homicides-sunburst)
 `
 )})
     }
@@ -108,7 +110,7 @@ md `
 };
 
 const notebook = {
-  id: "8db142c9acb93c5b@63",
+  id: "8db142c9acb93c5b@64",
   modules: [m0]
 };
 
