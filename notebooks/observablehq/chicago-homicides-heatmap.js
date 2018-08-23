@@ -1,18 +1,18 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-homicides-heatmap
-// Title: Chicago Homicides Heatmap
+// Title: Chicago Homicides Leaflet Map
 // Author: Taras Novak (@randomfractals)
-// Version: 368
+// Version: 388
 // Runtime version: 1
 
 const m0 = {
-  id: "93331662b9af945d@368",
+  id: "93331662b9af945d@388",
   variables: [
     {
       inputs: ["md"],
       value: (function(md){return(
-md`# Chicago Homicides Heatmap
+md`# Chicago Homicides Leaflet Map
 
-Just a simple Chicago homicides Leaflet JS heatmap.
+Just a simple Chicago homicides Leaflet JS map with clustered markers.
 `
 )})
     },
@@ -45,8 +45,8 @@ md `## Mapping Chicago Homicides with [LeafletJS](https://leafletjs.com/)`
     },
     {
       name: "map",
-      inputs: ["DOM","width","createMap","homicides","heatLayer"],
-      value: (function*(DOM,width,createMap,homicides,heatLayer)
+      inputs: ["DOM","width","createMap","homicides","markerCluster","L","createGeoData"],
+      value: (function*(DOM,width,createMap,homicides,markerCluster,L,createGeoData)
 {
   // create map container and leaflet map
   const mapContainer = DOM.element('div', {style: `width:${width}px;height:${width/1.6}px`});
@@ -56,7 +56,8 @@ md `## Mapping Chicago Homicides with [LeafletJS](https://leafletjs.com/)`
   // create data points for the heatmap layer
   let dataPoints = homicides.map(h => [h.Latitude, h.Longitude, 0.1]); // intensity
   
-  // add heatmap layer
+  // add heatmap layer 
+  /*
   let dataHeatLayer = heatLayer(dataPoints, {
     minOpacity: 0.5,
     maxZoom: 18,
@@ -65,8 +66,21 @@ md `## Mapping Chicago Homicides with [LeafletJS](https://leafletjs.com/)`
     blur: 5,
     gradient: null
   }).addTo(map);
+  */
   
-  // TODO: add clustered markers
+  // add clustered markers
+  let markers = markerCluster({});
+  let markersLayer = L.geoJson(createGeoData(homicides), {
+    onEachFeature: function (feature, layer) {
+      const data = feature.properties;
+      const html = `<div class="popup"><h3>${data.block}</h3>` +
+            `<p>(${data.location.toLowerCase()})<br />${data.info}<br />${data.date}</p></div>`;
+      layer.bindPopup(html);
+      layer.bindTooltip(html, {sticky: true});
+    }
+  });  
+  markers.addLayer(markersLayer);
+  map.addLayer(markers);  
   // map.fitBounds(markers.getBounds());
 }
 )
@@ -100,6 +114,40 @@ function createMap(mapContainer) {
 html`<style type="text/css">
   div.popup p { margin: 4px 0; }
 </style>`
+)})
+    },
+    {
+      inputs: ["createGeoData","homicides"],
+      value: (function(createGeoData,homicides){return(
+createGeoData(homicides)
+)})
+    },
+    {
+      name: "createGeoData",
+      value: (function(){return(
+function createGeoData(homicides) {
+  const geoData = {
+    type: 'FeatureCollection',
+    crs: {type: 'name', properties: {name: 'urn:ogc:def:crs:OGC:1.3:CRS84'}},
+    features: []
+  };
+  homicides.map(h => {
+    geoData.features.push({
+      type: 'Feature',
+      properties: {
+        block: h.Block,
+        location: h['Location Description'],
+        info: h.Description,
+        date: h.Date
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: [h.Longitude, h.Latitude]
+      }
+    });
+  });
+  return geoData;
+}
 )})
     },
     {
@@ -154,7 +202,7 @@ html`<link href='${resolve('leaflet.markercluster@1.1.0/dist/MarkerCluster.Defau
 };
 
 const notebook = {
-  id: "93331662b9af945d@368",
+  id: "93331662b9af945d@388",
   modules: [m0]
 };
 
