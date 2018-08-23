@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-homicides-treemap
 // Title: Chicago Homicides Treemap
 // Author: Taras Novak (@randomfractals)
-// Version: 188
+// Version: 225
 // Runtime version: 1
 
 const m0 = {
-  id: "540643c8c4924ccd@188",
+  id: "540643c8c4924ccd@225",
   variables: [
     {
       inputs: ["md"],
@@ -14,11 +14,44 @@ md`# Chicago Homicides Treemap
 
 This treemap displays Chicago homicides by 'side' and community area.
 
-Chicago is divided into 77 community areas and 9 sides as defined by the Social Science Research Committee at the University of Chicago back in 2012:
+Chicago is divided into 9 sides and 77 community areas as defined by the Social Science Research Committee at the University of Chicago back in 2012:
 
 https://en.wikipedia.org/wiki/Community_areas_in_Chicago
+`
+)})
+    },
+    {
+      inputs: ["md"],
+      value: (function(md){return(
+md `## Chicago Homicides Data, 2001-2018
 
-*mouseover for extended crime data cell toolip*`
+Data Source: [Chicago Data Portal/Public Safety/Crimes 2001 to present](https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2)`
+)})
+    },
+    {
+      name: "dataUrl",
+      value: (function(){return(
+'https://raw.githubusercontent.com/RandomFractals/ChicagoCrimes/master/data/2018/chicago-homicides-2001-2018.csv'
+)})
+    },
+    {
+      name: "homicides",
+      inputs: ["d3","dataUrl"],
+      value: (function(d3,dataUrl){return(
+d3.csv(dataUrl)
+)})
+    },
+    {
+      name: "data",
+      inputs: ["groupBySide","sides","homicides"],
+      value: (function(groupBySide,sides,homicides){return(
+groupBySide(sides, homicides)
+)})
+    },
+    {
+      inputs: ["md"],
+      value: (function(md){return(
+md `*mouseover for extended crime data cell toolip*`
 )})
     },
     {
@@ -39,7 +72,7 @@ https://en.wikipedia.org/wiki/Community_areas_in_Chicago
       .attr("transform", d => `translate(${d.x0},${d.y0})`);
 
   leaf.append("title")
-      .text(d => `${format(d.value)} ${d.ancestors().reverse().map(d => d.data.name).join("/").replace('flare/', '')}`);
+      .text(d => `${format(d.value)} on ${d.ancestors().reverse().map(d => d.data.name).join("/").replace('flare/', '')}`);
 
   leaf.append("rect")
       .attr("id", d => (d.leafUid = DOM.uid("leaf")).id)
@@ -102,32 +135,7 @@ d3.format(",d")
 )})
     },
     {
-      inputs: ["md"],
-      value: (function(md){return(
-md `## Chicago Homicides Data, 2001-2018
 
-Data Source: [Chicago Data Portal/Public Safety/Crimes 2001 to present](https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present/ijzp-q8t2)`
-)})
-    },
-    {
-      name: "dataUrl",
-      value: (function(){return(
-'https://raw.githubusercontent.com/RandomFractals/ChicagoCrimes/master/data/2018/chicago-homicides-2001-2018.csv'
-)})
-    },
-    {
-      name: "homicides",
-      inputs: ["d3","dataUrl"],
-      value: (function(d3,dataUrl){return(
-d3.csv(dataUrl)
-)})
-    },
-    {
-      name: "data",
-      inputs: ["groupBySide","sides","homicides"],
-      value: (function(groupBySide,sides,homicides){return(
-groupBySide(sides, homicides)
-)})
     },
     {
       inputs: ["md"],
@@ -174,21 +182,47 @@ d3.csv(communitiesInfoUrl)
   // create communities info map
   const communities = {}
   communityData.slice(1) // skip 1st null row
-    .map(community => communities[community.CommunityName.toLowerCase()] = community);       
+    .map(community => communities[community.CommunityName.toLowerCase()] = community);
   return communities;
 }
 )
     },
     {
       name: "groupBySide",
-      value: (function(){return(
+      inputs: ["groupByCommunity"],
+      value: (function(groupByCommunity){return(
 function groupBySide(sides, homicides) {
+  const communityData = groupByCommunity(homicides);
   return {
     name: 'flare',
     children: Object.keys(sides).map(sideName => {
-      return {name: sideName, children: sides[sideName]};
-    }),
+      return {
+        name: sideName, 
+        children: sides[sideName].map(community => {
+          return {
+            name: community.CommunityName, 
+            size: communityData[community.CommunityArea].length
+          };
+        })
+      };
+    })
   };
+}
+)})
+    },
+    {
+      name: "groupByCommunity",
+      value: (function(){return(
+function groupByCommunity (data) {
+  const communityData = {};
+  data.map(d => {
+    const communityId = d['Community Area'];
+    if (!communityData[communityId]) {
+      communityData[communityId] = [];
+    }
+    communityData[communityId].push(d);
+  });
+  return communityData;  
 }
 )})
     },
@@ -203,7 +237,7 @@ require("https://d3js.org/d3.v5.min.js")
 };
 
 const notebook = {
-  id: "540643c8c4924ccd@188",
+  id: "540643c8c4924ccd@225",
   modules: [m0]
 };
 
