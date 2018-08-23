@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-community-areas-leaflet
 // Title: Chicago Community Areas Leaflet
 // Author: Taras Novak (@randomfractals)
-// Version: 228
+// Version: 277
 // Runtime version: 1
 
 const m0 = {
-  id: "96785811993b45f6@228",
+  id: "96785811993b45f6@277",
   variables: [
     {
       inputs: ["md"],
@@ -32,24 +32,31 @@ md `## Mapping Chicago Communites with [LeafletJS](https://leafletjs.com/)`
     },
     {
       name: "map",
-      inputs: ["DOM","width","createMap","L","geoData","toHtml"],
-      value: (function*(DOM,width,createMap,L,geoData,toHtml)
+      inputs: ["DOM","width","createMap","communities","L","geoData"],
+      value: (function*(DOM,width,createMap,communities,L,geoData)
 {
   // create map container and leaflet map
   const mapContainer = DOM.element('div', {style: `width:${width}px;height:${width/1.6}px`});
   yield mapContainer;
   const map = createMap(mapContainer);
-  let communitiesLayer = L.geoJson(geoData, {
-    weight: 3,
+
+  // data mapping patch
+  communities['lake view'] = communities['lakeview'];
+  communities['ohare'] = communities["o'hare"];
+  
+  // create communities map layer
+  // todo: color by sides
+  const communitiesLayer = L.geoJson(geoData, {
+    weight: 2,
     color: '#000',
     onEachFeature: function (feature, layer) {
-      const html = `<div class="popup"><h4>${toHtml(feature.properties.community)}</h2></div>`;
+      const communityName = feature.properties.community.toLowerCase();
+      const community = communities[communityName];
+      const html = `<div class="popup"><h4>${community.CommunityName}, ${community.Side}</h4></div>`;
       layer.bindPopup(html);
       layer.bindTooltip(html, {sticky: true});
     }
   }).addTo(map);
-
-  // todo: refine community area tooltip and color by sides
 }
 )
     },
@@ -165,40 +172,12 @@ d3.csv(dataUrl)
   return communities;
 }
 )
-    },
-    {
-      name: "features",
-      inputs: ["addCommunityInfo","geoData","communities"],
-      value: (function(addCommunityInfo,geoData,communities){return(
-addCommunityInfo(geoData, communities)
-)})
-    },
-    {
-      name: "addCommunityInfo",
-      value: (function(){return(
-function addCommunityInfo(geoData, communities) {
-  geoData.features.map(feature => {
-    // replace community name with community info
-    const communityName = feature.properties.community.toLowerCase();
-    feature.properties.community = communities[communityName];
-  });
-  return geoData.features;
-}
-)})
-    },
-    {
-      name: "toHtml",
-      value: (function(){return(
-function toHtml(community) {
- return JSON.stringify(community, null, '<br />');
-}
-)})
     }
   ]
 };
 
 const notebook = {
-  id: "96785811993b45f6@228",
+  id: "96785811993b45f6@277",
   modules: [m0]
 };
 
