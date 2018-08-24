@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicagocrimes
 // Title: Chicago Crimes EDA
 // Author: Taras Novak (@randomfractals)
-// Version: 64
+// Version: 65
 // Runtime version: 1
 
 const m0 = {
-  id: "8db142c9acb93c5b@64",
+  id: "8db142c9acb93c5b@65",
   variables: [
     {
       inputs: ["md"],
@@ -80,7 +80,7 @@ md `## [Chicago Homicides, 2001-2018, Notebooks](https://beta.observablehq.com/s
       inputs: ["html"],
       value: (function(html){return(
 html `<a href="https://beta.observablehq.com/search?query=Chicago%20Homicides">
-  <img src="https://raw.githubusercontent.com/RandomFractals/ChicagoCrimes/master/notebooks/observablehq/chicago-homicides-notebooks-2.png" alt="Search Chicago Homicides" />
+  <img src="https://raw.githubusercontent.com/RandomFractals/ChicagoCrimes/master/notebooks/observablehq/chicago-homicides-notebooks-3.png" alt="Search Chicago Homicides" />
 </a>
 `
 )})
@@ -110,7 +110,7 @@ md `
 };
 
 const notebook = {
-  id: "8db142c9acb93c5b@64",
+  id: "8db142c9acb93c5b@65",
   modules: [m0]
 };
 
