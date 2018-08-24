@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-homicides-sunburst
 // Title: Chicago Homicides Sunburst
 // Author: Taras Novak (@randomfractals)
-// Version: 440
+// Version: 442
 // Runtime version: 1
 
 const m0 = {
-  id: "d0e1ec4b85f01a90@440",
+  id: "d0e1ec4b85f01a90@442",
   variables: [
     {
       inputs: ["md"],
@@ -163,12 +163,6 @@ d3.format(",d")
 )})
     },
     {
-      name: "width",
-      value: (function(){return(
-932
-)})
-    },
-    {
       name: "radius",
       inputs: ["width"],
       value: (function(width){return(
@@ -214,11 +208,6 @@ require("https://d3js.org/d3.v5.min.js")
       from: "@randomfractals/chicago-homicides-treemap",
       name: "groupBySide",
       remote: "groupBySide"
-    },
-    {
-      from: "@randomfractals/chicago-homicides-treemap",
-      name: "groupByCommunity",
-      remote: "groupByCommunity"
     }
   ]
 };
@@ -288,22 +277,6 @@ function groupBySide(sides, homicides) {
 )})
     },
     {
-      name: "groupByCommunity",
-      value: (function(){return(
-function groupByCommunity (data) {
-  const communityData = {};
-  data.map(d => {
-    const communityId = d['Community Area'];
-    if (!communityData[communityId]) {
-      communityData[communityId] = [];
-    }
-    communityData[communityId].push(d);
-  });
-  return communityData;  
-}
-)})
-    },
-    {
       name: "communityData",
       inputs: ["d3","communitiesInfoUrl"],
       value: (function(d3,communitiesInfoUrl){return(
@@ -324,6 +297,22 @@ require("https://d3js.org/d3.v5.min.js")
 )})
     },
     {
+      name: "groupByCommunity",
+      value: (function(){return(
+function groupByCommunity (data) {
+  const communityData = {};
+  data.map(d => {
+    const communityId = d['Community Area'];
+    if (!communityData[communityId]) {
+      communityData[communityId] = [];
+    }
+    communityData[communityId].push(d);
+  });
+  return communityData;  
+}
+)})
+    },
+    {
       name: "communitiesInfoUrl",
       value: (function(){return(
 'https://raw.githubusercontent.com/RandomFractals/ChicagoCrimes/master/data/chicago-community-areas.csv'
@@ -333,7 +322,7 @@ require("https://d3js.org/d3.v5.min.js")
 };
 
 const notebook = {
-  id: "d0e1ec4b85f01a90@440",
+  id: "d0e1ec4b85f01a90@442",
   modules: [m0,m1]
 };
 
