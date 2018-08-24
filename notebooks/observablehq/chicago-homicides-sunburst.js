@@ -1,16 +1,16 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-homicides-sunburst
-// Title: Chicago Homicides Sunburst
+// Title: Chicago Homicides Sunburst, 2001-2018
 // Author: Taras Novak (@randomfractals)
-// Version: 442
+// Version: 444
 // Runtime version: 1
 
 const m0 = {
-  id: "d0e1ec4b85f01a90@442",
+  id: "d0e1ec4b85f01a90@444",
   variables: [
     {
       inputs: ["md"],
       value: (function(md){return(
-md`# Chicago Homicides Sunburst
+md`# Chicago Homicides Sunburst, 2001-2018
 
 This sundial displays Chicago homicides by 'side' and community area for the time period from January 2001 to August 10 2018.
 
@@ -322,7 +322,7 @@ function groupByCommunity (data) {
 };
 
 const notebook = {
-  id: "d0e1ec4b85f01a90@442",
+  id: "d0e1ec4b85f01a90@444",
   modules: [m0,m1]
 };
 
