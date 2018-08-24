@@ -1,16 +1,16 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-sunburst
-// Title: Chicago Crimes Sunburst
+// Title: Chicago Crimes Sunburst, 2018
 // Author: Taras Novak (@randomfractals)
-// Version: 417
+// Version: 432
 // Runtime version: 1
 
 const m0 = {
-  id: "ab9d9d8584da9fb8@417",
+  id: "ab9d9d8584da9fb8@432",
   variables: [
     {
       inputs: ["md"],
       value: (function(md){return(
-md`# Chicago Crimes Sunburst
+md`# Chicago Crimes Sunburst, 2018
 
 *UX tip: click on the inner circle radial feather to zoom in and middle white cirlce to zoom out,
 mouse over for the reported crime counts*
@@ -121,9 +121,15 @@ mouse over for the reported crime counts*
     },
     {
       name: "data",
-      inputs: ["flares"],
-      value: (function(flares){return(
-flares
+      inputs: ["crimeData","groupChildren"],
+      value: (function(crimeData,groupChildren){return(
+Object({
+  name: 'flare', 
+  children: Object.keys(crimeData)
+    .map(crimeType => {
+      return {name: crimeType.toLowerCase(), children: groupChildren(crimeData[crimeType], 'info')};
+    })
+})
 )})
     },
     {
@@ -152,12 +158,6 @@ d3.scaleOrdinal().range(d3.quantize(d3.interpolateRainbow, data.children.length 
       inputs: ["d3"],
       value: (function(d3){return(
 d3.format(",d")
-)})
-    },
-    {
-      name: "width",
-      value: (function(){return(
-932
 )})
     },
     {
@@ -194,25 +194,23 @@ md `## Crime Data`
 )})
     },
     {
-      name: "flares",
-      inputs: ["crimeData","groupChildren"],
-      value: (function(crimeData,groupChildren)
-{
-  return {
-    name: 'flare', 
-    children: Object.keys(crimeData)
-      .map(crimeType => {
-        return {name: crimeType.toLowerCase(), children: groupChildren(crimeData[crimeType], 'info')};
-      })
-  };
-}
-)
+      name: "crimeData",
+      inputs: ["groupByField","dataTable"],
+      value: (function(groupByField,dataTable){return(
+groupByField(dataTable, 'PrimaryType')
+)})
     },
     {
-      name: "assaultTypes",
-      inputs: ["groupChildren","crimeData"],
-      value: (function(groupChildren,crimeData){return(
-groupChildren(crimeData['ASSAULT'], 'info')
+      name: "dataUrl",
+      value: (function(){return(
+'https://raw.githubusercontent.com/RandomFractals/ChicagoCrimes/master/data/2018/chicago-crimes-2018.arrow'
+)})
+    },
+    {
+      name: "dataTable",
+      inputs: ["loadData","dataUrl","arrow"],
+      value: (function(loadData,dataUrl,arrow){return(
+loadData(dataUrl).then(buffer => arrow.Table.from(new Uint8Array(buffer)))
 )})
     },
     {
@@ -232,26 +230,6 @@ function groupChildren(arrayData, groupField) {
       return {name: key, size: groups[key].length};
   });
 }
-)})
-    },
-    {
-      name: "crimeData",
-      inputs: ["groupByField","dataTable"],
-      value: (function(groupByField,dataTable){return(
-groupByField(dataTable, 'PrimaryType')
-)})
-    },
-    {
-      name: "dataUrl",
-      value: (function(){return(
-'https://raw.githubusercontent.com/RandomFractals/ChicagoCrimes/master/data/2018/chicago-crimes-2018.arrow'
-)})
-    },
-    {
-      name: "dataTable",
-      inputs: ["loadData","dataUrl","arrow"],
-      value: (function(loadData,dataUrl,arrow){return(
-loadData(dataUrl).then(buffer => arrow.Table.from(new Uint8Array(buffer)))
 )})
     },
     {
@@ -305,13 +283,13 @@ const m2 = {
   variables: [
     {
       name: "groupByField",
-      inputs: ["arrow","toDate"],
-      value: (function(arrow,toDate){return(
+      inputs: ["arrow","toDate","months"],
+      value: (function(arrow,toDate,months){return(
 function groupByField(data, groupField) {
   let groupData, date, location, arrested, info, results = {};
   const dateFilter = arrow.predicate.custom(i => {
     const date = toDate(data.getColumn('Date').get(i));
-    return (date.getMonth() <= 6); // through June
+    return (date.getMonth() <= months.length);
   }, b => 1);
   data.filter(dateFilter)  
   .scan((index) => {
@@ -349,12 +327,18 @@ require('apache-arrow')
       from: "@randomfractals/apache-arrow",
       name: "toDate",
       remote: "toDate"
+    },
+    {
+      name: "months",
+      value: (function(){return(
+['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'August']
+)})
     }
   ]
 };
 
 const notebook = {
-  id: "ab9d9d8584da9fb8@417",
+  id: "ab9d9d8584da9fb8@432",
   modules: [m0,m1,m2]
 };
 
