@@ -1,18 +1,18 @@
 // URL: https://beta.observablehq.com/@randomfractals/apache-arrow-hypergrid
-// Title: Apache Arrow Hypergrid
+// Title: Chicago Crimes Apache Arrow Hypergrid
 // Author: Taras Novak (@randomfractals)
-// Version: 63
+// Version: 66
 // Runtime version: 1
 
 const m0 = {
-  id: "0d17e2847d58298f@63",
+  id: "0d17e2847d58298f@66",
   variables: [
     {
       inputs: ["md"],
       value: (function(md){return(
-md`# Apache Arrow Hypergrid
+md`# Chicago Crimes Apache Arrow Hypergrid
 
-short example of displaying 156+K rows of 
+short example of displaying 156+K rows of 2018 Chicago crimes  
 [Apache Arrow](https://beta.observablehq.com/@randomfractals/apache-arrow)
 data with [fin-hypergid](https://beta.observablehq.com/@randomfractals/fin-hypergrid)
 canvas renderer`
@@ -149,7 +149,7 @@ function toDate(timestamp) {
 };
 
 const notebook = {
-  id: "0d17e2847d58298f@63",
+  id: "0d17e2847d58298f@66",
   modules: [m0,m1]
 };
 
