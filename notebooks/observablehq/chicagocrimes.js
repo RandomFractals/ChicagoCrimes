@@ -1,11 +1,11 @@
 // URL: https://beta.observablehq.com/@randomfractals/chicagocrimes
 // Title: Chicago Crimes EDA
 // Author: Taras Novak (@randomfractals)
-// Version: 65
+// Version: 82
 // Runtime version: 1
 
 const m0 = {
-  id: "8db142c9acb93c5b@65",
+  id: "8db142c9acb93c5b@82",
   variables: [
     {
       inputs: ["md"],
@@ -38,35 +38,10 @@ html `<a href="https://beta.observablehq.com/search?query=Chicago%20Crimes">
 )})
     },
     {
-      inputs: ["md"],
-      value: (function(md){return(
-md `
-[Chicago Crimes Leaflet Pixi Overlay](https://beta.observablehq.com/@randomfractals/leaflet-pixi-overlay)
-
-[Chicago Crimes Deck.GL Heatmap](https://beta.observablehq.com/@randomfractals/deck-gl-heatmap)
-
-[Chicago Crimes by Type](https://beta.observablehq.com/@randomfractals/chicago-crimes-by-type)
-
-[Chicago Crimes in Perspective](https://beta.observablehq.com/@randomfractals/chicago-crimes-in-perspective)
-
-[Chicago Crimes Ward Flubber](https://beta.observablehq.com/@randomfractals/chicago-crimes-by-ward)
-
-[Chicago Crimes by Location](https://beta.observablehq.com/@randomfractals/chicago-crimes-by-location)
-
-[Chicago Crimes Sunburst](https://beta.observablehq.com/@randomfractals/chicago-crimes-sunburst)
-
-[Chicago Crimes Sankey](https://beta.observablehq.com/@randomfractals/chicago-crimes-sankey)
-
-[Chicago Crimes by Day](https://beta.observablehq.com/@randomfractals/chicago-crimes-by-day)
-
-[Chicago Crimes Hypergrid](https://beta.observablehq.com/@randomfractals/apache-arrow-hypergrid)
-
-[Chicago Crimes Ridgeline](https://beta.observablehq.com/@randomfractals/chicago-crimes-ridgeline)
-
-[Chicago Crimes Hexgrid Map](https://beta.observablehq.com/@randomfractals/chicago-crimes-hexgrid)
-
-[Chicago Crimes Treemap](https://beta.observablehq.com/@randomfractals/chicago-crimes-treemap)
-`
+      name: "crimesNotebooks",
+      inputs: ["md","getLinksMarkdown","searchByTitle","notebooks"],
+      value: (function(md,getLinksMarkdown,searchByTitle,notebooks){return(
+md `${getLinksMarkdown(searchByTitle(notebooks, 'chicago crimes'))}`
 )})
     },
     {
@@ -86,32 +61,107 @@ html `<a href="https://beta.observablehq.com/search?query=Chicago%20Homicides">
 )})
     },
     {
+      name: "homicidesNotebooks",
+      inputs: ["md","getLinksMarkdown","searchByTitle","notebooks"],
+      value: (function(md,getLinksMarkdown,searchByTitle,notebooks){return(
+md `${getLinksMarkdown(searchByTitle(notebooks, 'chicago homicides'))}`
+)})
+    },
+    {
+      from: "@randomfractals/notebooks",
+      name: "notebooks",
+      remote: "notebooks"
+    },
+    {
+      from: "@randomfractals/notebooks",
+      name: "searchByTitle",
+      remote: "searchByTitle"
+    },
+    {
+      from: "@randomfractals/notebooks",
+      name: "getLinksMarkdown",
+      remote: "getLinksMarkdown"
+    }
+  ]
+};
+
+const m1 = {
+  id: "@randomfractals/notebooks",
+  variables: [
+    {
+      name: "notebooks",
+      inputs: ["MAXDOCS","apiUrl","userName"],
+      value: (async function*(MAXDOCS,apiUrl,userName)
+{
+  const documents = [];
+  var last = "4096-01-01T00:45:25.493Z"; // infinite future
+  var seen = false;
+  do {
+    seen = (await fetch(`${apiUrl}/documents/@${userName}?before=${last}`).then(d => d.json()))
+    .map(d => {
+      documents.push(d);
+      last = d.update_time;
+    }).length;
+    yield documents.slice(0, MAXDOCS);
+  } while (seen && documents.length < MAXDOCS)
+}
+)
+    },
+    {
+      name: "searchByTitle",
+      value: (function(){return(
+function searchByTitle(notebooks, title) {
+  const matchingNotebooks = [];
+  notebooks.map(notebook => {
+    if( notebook.title.toLowerCase().indexOf(title) >= 0) {
+      matchingNotebooks.push(notebook); 
+    }
+  });
+  return matchingNotebooks;
+}
+)})
+    },
+    {
+      name: "getLinksMarkdown",
+      inputs: ["userName"],
+      value: (function(userName){return(
+function getLinksMarkdown(notebooks) {
+  const links = [];
+  return notebooks.map(notebook => `[${notebook.title}](https://beta.observablehq.com/@${userName}/${notebook.slug})<br /><br />`)
+    .reduce((html, link) => html + link);
+}
+)})
+    },
+    {
+      name: "MAXDOCS",
+      value: (function(){return(
+210
+)})
+    },
+    {
+      name: "apiUrl",
+      value: (function(){return(
+"https://cors-anywhere.herokuapp.com/" + "https://api.observablehq.com"
+)})
+    },
+    {
+      name: "viewof userName",
       inputs: ["md"],
       value: (function(md){return(
-md `
-
-[Chicago Homicides Data Starter Kit](https://beta.observablehq.com/@randomfractals/chicago-homicides)
-
-[Chicago Homicides by Day](https://beta.observablehq.com/@randomfractals/chicago-homicides-by-day)
-
-[Chicago Homicides by Ward](https://beta.observablehq.com/@randomfractals/chicago-homicides-by-ward)
-
-[Chicago Homicides by Community](https://beta.observablehq.com/@randomfractals/chicago-homicides-by-community-area-leaflet)
-
-[Chicago Homicides Leaflet Map](https://beta.observablehq.com/@randomfractals/chicago-homicides-heatmap)
-
-[Chicago Homicides Treemap](https://beta.observablehq.com/@randomfractals/chicago-homicides-treemap)
-
-[Chicago Homicides Sunburst](https://beta.observablehq.com/@randomfractals/chicago-homicides-sunburst)
-`
+md`<input value=randomfractals>`
 )})
+    },
+    {
+      name: "userName",
+      inputs: ["Generators","viewof userName"],
+      value: (G, _) => G.input(_)
     }
   ]
 };
 
 const notebook = {
-  id: "8db142c9acb93c5b@65",
-  modules: [m0]
+  id: "8db142c9acb93c5b@82",
+  modules: [m0,m1]
 };
 
 export default notebook;
