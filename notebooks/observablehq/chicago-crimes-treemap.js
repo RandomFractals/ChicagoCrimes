@@ -1,16 +1,18 @@
-// URL: https://beta.observablehq.com/@randomfractals/chicago-crimes-treemap
+// URL: https://observablehq.com/@randomfractals/chicago-crimes-treemap
 // Title: Chicago Crimes Treemap
 // Author: Taras Novak (@randomfractals)
-// Version: 111
+// Version: 136
 // Runtime version: 1
 
 const m0 = {
-  id: "71e2d26a83665380@111",
+  id: "71e2d26a83665380@136",
   variables: [
     {
       inputs: ["md"],
       value: (function(md){return(
 md`# Chicago Crimes Treemap
+
+This treemap displays major crime categories, counts and breakdown by description for the reported 2018 Chicago crimes.
 
 *mouseover for extended crime data cell toolip*`
 )})
@@ -21,42 +23,35 @@ md`# Chicago Crimes Treemap
       value: (function(treemap,data,d3,DOM,width,height,format,color)
 {
   const root = treemap(data);
-
   const svg = d3.select(DOM.svg(width, height))
-      .style("width", "100%")
-      .style("height", "auto")
-      .style("font", "10px sans-serif");
-
-  const leaf = svg.selectAll("g")
+      .style('width', '100%')
+      .style('height', 'auto')
+      .style('font', '10px sans-serif');
+  const leaf = svg.selectAll('g')
     .data(root.leaves())
-    .enter().append("g")
-      .attr("transform", d => `translate(${d.x0},${d.y0})`);
-
-  leaf.append("title")
+    .enter().append('g')
+      .attr('transform', d => `translate(${d.x0},${d.y0})`);
+  leaf.append('title')
       .text(d => `${format(d.value)} ${d.ancestors().reverse().map(d => d.data.name).join("/").replace('flare/', '')}`);
-
-  leaf.append("rect")
-      .attr("id", d => (d.leafUid = DOM.uid("leaf")).id)
-      .attr("fill", d => { while (d.depth > 1) d = d.parent; return color(d.data.name); })
-      .attr("fill-opacity", 0.6)
-      .attr("width", d => d.x1 - d.x0)
-      .attr("height", d => d.y1 - d.y0);
-
-  leaf.append("clipPath")
-      .attr("id", d => (d.clipUid = DOM.uid("clip")).id)
-    .append("use")
-      .attr("xlink:href", d => d.leafUid.href);
-
-  leaf.append("text")
-      .attr("clip-path", d => d.clipUid)
-    .selectAll("tspan")
+  leaf.append('rect')
+      .attr('id', d => (d.leafUid = DOM.uid('leaf')).id)
+      .attr('fill', d => { while (d.depth > 1) d = d.parent; return color(d.data.name); })
+      .attr('fill-opacity', 0.6)
+      .attr('width', d => d.x1 - d.x0)
+      .attr('height', d => d.y1 - d.y0);
+  leaf.append('clipPath')
+      .attr('id', d => (d.clipUid = DOM.uid('clip')).id)
+    .append('use')
+      .attr('xlink:href', d => d.leafUid.href);
+  leaf.append('text')
+      .attr('clip-path', d => d.clipUid)
+    .selectAll('tspan')
     .data(d => d.data.name.split(/(?=[A-Z][^A-Z])/g).concat(format(d.value)))
-    .enter().append("tspan")
-      .attr("x", 3)
-      .attr("y", (d, i, nodes) => (i === nodes.length - 1) * 3 + 16 + (i - 0.5) * 9)
-      .attr("fill-opacity", (d, i, nodes) => i === nodes.length - 1 ? 0.7 : null)
+    .enter().append('tspan')
+      .attr('x', 3)
+      .attr('y', (d, i, nodes) => (i === nodes.length - 1) * 3 + 16 + (i - 0.5) * 9)
+      .attr('fill-opacity', (d, i, nodes) => i === nodes.length - 1 ? 0.7 : null)
       .text(d => d);
-
   return svg.node();
 }
 )
@@ -82,15 +77,9 @@ data => d3.treemap()
 )})
     },
     {
-      name: "width",
-      value: (function(){return(
-932
-)})
-    },
-    {
       name: "height",
       value: (function(){return(
-1060
+1024
 )})
     },
     {
@@ -108,16 +97,11 @@ d3.scaleOrdinal().range(d3.schemeCategory10)
 )})
     },
     {
-      name: "d3",
-      inputs: ["require"],
-      value: (function(require){return(
-require("https://d3js.org/d3.v5.min.js")
-)})
-    },
-    {
       inputs: ["md"],
       value: (function(md){return(
-md `# Crime Data`
+md `# Crime Data
+
+Data Source: [Chicago Data Portal/Public Safety/Crimes 2018](https://data.cityofchicago.org/Public-Safety/Crimes-2018/3i3m-jwuy)`
 )})
     },
     {
@@ -147,10 +131,9 @@ groupByField(dataTable, 'PrimaryType')
 {
   return {
     name: 'flare', 
-    children: Object.keys(crimeData)
-      .map(crimeType => {
-        return {name: crimeType.toLowerCase(), children: groupChildren(crimeData[crimeType], 'info')};
-      })
+    children: Object.keys(crimeData).map(crimeType => {
+      return {name: crimeType.toLowerCase(), children: groupChildren(crimeData[crimeType], 'info')};
+    })
   };
 }
 )
@@ -167,11 +150,23 @@ function groupChildren(arrayData, groupField) {
     }
     groups[info].push(data);
   });
-  return Object.keys(groups)
-    .map(key => {
-      return {name: key, size: groups[key].length};
+  return Object.keys(groups).map(key => {
+    return {name: key, size: groups[key].length};
   });
 }
+)})
+    },
+    {
+      inputs: ["md"],
+      value: (function(md){return(
+md `## Imports`
+)})
+    },
+    {
+      name: "arrow",
+      inputs: ["require"],
+      value: (function(require){return(
+require('apache-arrow@0.3.1')
 )})
     },
     {
@@ -185,10 +180,10 @@ function groupChildren(arrayData, groupField) {
       remote: "groupByField"
     },
     {
-      name: "arrow",
+      name: "d3",
       inputs: ["require"],
       value: (function(require){return(
-require('apache-arrow')
+require("https://d3js.org/d3.v5.min.js")
 )})
     }
   ]
@@ -262,7 +257,7 @@ function groupByField(data, groupField) {
       name: "arrow",
       inputs: ["require"],
       value: (function(require){return(
-require('apache-arrow')
+require('apache-arrow@0.3.1')
 )})
     },
     {
@@ -280,7 +275,7 @@ require('apache-arrow')
 };
 
 const notebook = {
-  id: "71e2d26a83665380@111",
+  id: "71e2d26a83665380@136",
   modules: [m0,m1,m2]
 };
 
