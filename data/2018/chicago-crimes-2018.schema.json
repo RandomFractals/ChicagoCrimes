@@ -1,0 +1,76 @@
+{
+  "fields": [
+    {
+      "name": "Latitude",
+      "type": {
+        "precision": 2
+      },
+      "nullable": true,
+      "metadata": {}
+    },
+    {
+      "name": "Longitude",
+      "type": {
+        "precision": 2
+      },
+      "nullable": true,
+      "metadata": {}
+    },
+    {
+      "name": "Block",
+      "type": {},
+      "nullable": true,
+      "metadata": {}
+    },
+    {
+      "name": "LocationDescription",
+      "type": {},
+      "nullable": true,
+      "metadata": {}
+    },
+    {
+      "name": "PrimaryType",
+      "type": {},
+      "nullable": true,
+      "metadata": {}
+    },
+    {
+      "name": "Description",
+      "type": {},
+      "nullable": true,
+      "metadata": {}
+    },
+    {
+      "name": "Arrest",
+      "type": {},
+      "nullable": true,
+      "metadata": {}
+    },
+    {
+      "name": "Domestic",
+      "type": {},
+      "nullable": true,
+      "metadata": {}
+    },
+    {
+      "name": "Ward",
+      "type": {
+        "precision": 2
+      },
+      "nullable": true,
+      "metadata": {}
+    },
+    {
+      "name": "Date",
+      "type": {
+        "unit": 2,
+        "timezone": null
+      },
+      "nullable": true,
+      "metadata": {}
+    }
+  ],
+  "metadata": {},
+  "dictionaries": {},
+  "dictionaryFields": {}
+}
